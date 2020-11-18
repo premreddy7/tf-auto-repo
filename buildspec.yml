@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "logging to ECR"
+      - aws --version
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - REPO="626505363333.dkr.ecr.ap-south-1.amazonaws.com/dockerdev-repo"
+
+  build:
+    commands:
+      - echo "build started `date`"
+      - docker build -t ${REPO}:latest .
+
+  post_build:
+    commands:
+      - docker push ${REPO}:latest
