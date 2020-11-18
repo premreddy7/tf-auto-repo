@@ -7,7 +7,7 @@ RUN echo "<body>" >> /var/www/html/index.html
 RUN echo '<h1 style="color:blue;text-align:center;font-size:80px;">NIKHIL PANDIT</h1>' >> /var/www/html/index.html
 RUN echo '<p style="color:red;text-align:center;font-size:40px;">DEVOPS ENG.</p>' >> /var/www/html/index.html
 RUN echo '<p style="color:green;text-align:center;font-size:30px;">DATE: <MY-DATE>.</p>' >> /var/www/html/index.html
-RUN echo '<p style="color:red;text-align:center;font-size:40px;">BUILD NO : <HOSTNAME> </p>' >> /var/www/html/index.html
+RUN echo '<p style="color:red;text-align:center;font-size:40px;">BUILD NO : 1 </p>' >> /var/www/html/index.html
 RUN echo "</body>" >> /var/www/html/index.html
 RUN echo "</html>" >> /var/www/html/index.html
 
