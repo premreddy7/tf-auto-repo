@@ -23,7 +23,7 @@ phases:
       - echo Publishing the Docker images ...
       - docker push ${REPO_URI}:${IMAGE_TAG}
       - docker push ${REPO_URI}:latest
-      - printf '[{"name":"Apache","imageUri":"%s"}]' ${REPO_URI}:${IMAGE_TAG} > imagedefinitions.json
+      - printf '[{"name":"web-container","imageUri":"%s"}]' ${REPO_URI}:${IMAGE_TAG} > imagedefinitions.json
 
 artifacts:
     files: imagedefinitions.json
