@@ -4,25 +4,37 @@ pipeline {
 
    stages {
    
-     stage('Install Dependencies') { 
+     stage('Terraform Init') { 
         steps { 
-           sh 'echo "npm install"' 
-        }
-     }
-     
-     stage('Test') { 
-        steps { 
-           sh 'echo "testing application..."'
+           withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+           sh 'cd terraform/dev && terraform init'
         }
       }
-
-         stage("Deploy application") { 
-         steps { 
-           sh 'echo "deploying application..."'
-         }
-
      }
-  
+     
+     stage('Terraform Plan') { 
+        steps { 
+           withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+           sh 'cd terraform/dev && terraform plan'
+        }
+      }
+     }
+     
+stage('Waiting for Approvals') {
+            
+      steps{
+          input('Plan Validated? Please approve to create resources in AWS?')
+			  }
+      }    
+     
+     
+     stage('Terraform Apply') { 
+        steps { 
+           withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+           sh 'cd terraform/dev && terraform apply'
+        }
+      }
+     }     
    	}
 
    }
