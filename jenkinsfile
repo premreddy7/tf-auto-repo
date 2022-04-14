@@ -6,7 +6,7 @@ pipeline {
    
      stage('Terraform Init') { 
         steps { 
-           withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+           withAWS(credentials: 'aws-cred') {
            sh 'cd terraform/dev && terraform init'
         }
       }
@@ -14,7 +14,7 @@ pipeline {
      
      stage('Terraform Plan') { 
         steps { 
-           withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+           withAWS(credentials: 'aws-cred') {
            sh 'cd terraform/dev && terraform plan'
         }
       }
@@ -30,11 +30,20 @@ stage('Waiting for Approvals') {
      
      stage('Terraform Apply') { 
         steps { 
-           withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+           withAWS(credentials: 'aws-cred') {
            sh 'cd terraform/dev && terraform apply -auto-approve'
         }
       }
-     }     
+     }
+
+     stage('Terraform Apply') { 
+        steps { 
+           withAWS(credentials: 'aws-cred') {
+           sh 'aws glue start-workflow-run --name cfm-etl-workflow --region us-east-2'
+        }
+      }
+     }
+
    	}
 
    }
