@@ -31,7 +31,7 @@ stage('Waiting for Approvals') {
      stage('Terraform Apply') { 
         steps { 
            withAWS(credentials: 'aws-cred', region: 'us-east-1') {
-           sh 'cd terraform/dev && terraform apply'
+           sh 'cd terraform/dev && terraform apply -auto-approve'
         }
       }
      }     
