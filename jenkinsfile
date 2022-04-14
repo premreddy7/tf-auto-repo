@@ -36,7 +36,7 @@ stage('Waiting for Approvals') {
       }
      }
 
-     stage('Terraform Apply') { 
+     stage('Run Glue Workflow Pipeline') { 
         steps { 
            withAWS(credentials: 'aws-cred') {
            sh 'aws glue start-workflow-run --name cfm-etl-workflow --region us-east-2'
