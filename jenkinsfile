@@ -7,7 +7,7 @@ pipeline {
      stage('Terraform Init') { 
         steps { 
            withAWS(credentials: 'aws-cred') {
-           sh 'cd terraform/dev && terraform init'
+           sh 'cd terraform/main && terraform init'
         }
       }
      }
@@ -15,7 +15,7 @@ pipeline {
      stage('Terraform Plan') { 
         steps { 
            withAWS(credentials: 'aws-cred') {
-           sh 'cd terraform/dev && terraform plan'
+           sh 'cd terraform/main && terraform plan'
         }
       }
      }
@@ -31,7 +31,7 @@ stage('Waiting for Approvals') {
      stage('Terraform Apply') { 
         steps { 
            withAWS(credentials: 'aws-cred') {
-           sh 'cd terraform/dev && terraform apply -auto-approve'
+           sh 'cd terraform/main && terraform apply -auto-approve'
         }
       }
      }
