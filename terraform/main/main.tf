@@ -5,7 +5,6 @@ provider "aws" {
 terraform {
   backend "s3" {
     bucket = "tf-code-backend-state-bucket"
-    key    = "terraform-tfstate/ens/dev/"
   }
 }
 
