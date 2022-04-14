@@ -99,5 +99,5 @@ module "aws_glue_job" {
 
   ### Glue Workflow ###
   glue_workflow_name = "cfm-etl-workflow"
-  cron_expression    = "cron(0 10 * * * *)"
+  cron_expression    = "cron(0 10 * * ? *)"
 }
