@@ -10,7 +10,7 @@ pipeline {
            sh '''
                 cd terraform/main 
                 terraform init -backend-config="terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color"
-              '''    
+           '''    
         }
       }
      }
