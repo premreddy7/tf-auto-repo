@@ -7,7 +7,10 @@ pipeline {
      stage('Terraform Init') { 
         steps { 
            withAWS(credentials: 'aws-cred') {
-           sh "cd terraform/main && terraform init -backend-config="terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color"
+           sh '''
+                cd terraform/main 
+                terraform init -backend-config="terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color"
+              '''    
         }
       }
      }
