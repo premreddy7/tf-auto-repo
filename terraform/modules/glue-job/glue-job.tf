@@ -27,9 +27,9 @@ resource "aws_glue_job" "glue_job" {
 
 
 resource "aws_iam_role" "glue_role" {
-  for_each           = { for k in compact([for k, v in var.glue_job : v.iam_role_arn == "" ? k : ""]) : k => var.glue_job[k] }
-  name               = each.value.iam_role_name
-  assume_role_policy = "${file(each.value.assume_role_policy_path)}" 
+  for_each            = { for k in compact([for k, v in var.glue_job : v.iam_role_arn == "" ? k : ""]) : k => var.glue_job[k] }
+  name                = each.value.iam_role_name
+  assume_role_policy  = file(each.value.assume_role_policy_path)
   managed_policy_arns = each.value.managed_role_policy
 }
 
@@ -73,7 +73,8 @@ resource "aws_glue_workflow" "wf" {
 resource "aws_glue_trigger" "int_trigger" {
   name          = "start_workflow"
   workflow_name = aws_glue_workflow.wf.name
-  type          = "ON_DEMAND"
+  schedule      = var.cron_expression
+  type          = "SCHEDULED"
 
   actions {
     job_name = var.glue_job.incorta_ops_da_mv_tbl_to_s3_glue_job.name

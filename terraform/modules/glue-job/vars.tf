@@ -1,15 +1,15 @@
 variable "glue_job" {
   type = map(object({
-    name              = string
-    script_location   = string
-    iam_role_name     = string
-    iam_role_arn      = string
-    managed_role_policy  = list(string)
+    name                    = string
+    script_location         = string
+    iam_role_name           = string
+    iam_role_arn            = string
+    managed_role_policy     = list(string)
     assume_role_policy_path = string
-    python_version    = string
-    glue_version      = string
-    number_of_workers = string
-    worker_type       = string
+    python_version          = string
+    glue_version            = string
+    number_of_workers       = string
+    worker_type             = string
     })
   )
 }
@@ -30,3 +30,4 @@ variable "create_bucket" {}
 
 ### GLue Workflow ###
 variable "glue_workflow_name" {}
+variable "cron_expression" {}
