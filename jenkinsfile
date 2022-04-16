@@ -8,7 +8,7 @@ pipeline {
         steps { 
            withAWS(credentials: 'aws-cred') {
            sh '''
-                cd terraform/main 
+                cd terraform/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
            '''    
         }
@@ -18,7 +18,7 @@ pipeline {
      stage('Terraform Plan') { 
         steps { 
            withAWS(credentials: 'aws-cred') {
-           sh 'cd terraform/main && terraform plan -no-color && terraform validate -no-color'
+           sh 'cd terraform/${GIT_BRANCH} && terraform plan -no-color && terraform validate -no-color'
         }
       }
      }
@@ -34,7 +34,7 @@ stage('Waiting for Approvals') {
      stage('Terraform Apply') { 
         steps { 
            withAWS(credentials: 'aws-cred') {
-           sh 'cd terraform/main && terraform apply -auto-approve -no-color'
+           sh 'cd terraform/${GIT_BRANCH} && terraform apply -auto-approve -no-color'
         }
       }
      }
@@ -42,11 +42,14 @@ stage('Waiting for Approvals') {
      stage('Run Glue Workflow Pipeline') { 
         steps { 
            withAWS(credentials: 'aws-cred') {
-           sh 'aws glue start-workflow-run --name cfm-etl-workflow --region us-east-2'
+           sh 'aws glue start-workflow-run --name cfm-etl-workflow_${params.environment} --region us-east-2'
         }
       }
      }
 
    	}
+parameters {
+    choice(choices: ['dev', 'prod'], description: 'What environment?', name: 'environment')
+  }    
 
    }
