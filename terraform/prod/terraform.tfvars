@@ -1,13 +1,12 @@
 region = "us-east-2"
-env    = "dev"
+env    = "prod"
 glue_job = {
   incorta_ops_da_mv_tbl_to_s3_glue_job = {
     name            = "incorta_ops_da_mv_tbl_to_s3_glue_job"
     script_location = "../scripts/incorta_to_s3.py"
-    iam_role_name   = "test_role"
-    iam_role_arn    = ""
-    #iam_role_arn      = "arn:aws:iam::517446614341:role/first_glue_job_test"
-    managed_role_policy     = ["arn:aws:iam::aws:policy/AmazonEC2FullAccess", "arn:aws:iam::aws:policy/AmazonS3FullAccess", "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole", "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess"]
+    iam_role_name   = ""
+    iam_role_arn      = "arn:aws:iam::517446614341:role/first_glue_job_test"
+    managed_role_policy = []
     assume_role_policy_path = "../iam_policy/assume_role_policy.json"
     python_version          = "3"
     glue_version            = "3.0"
