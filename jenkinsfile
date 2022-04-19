@@ -12,19 +12,6 @@ pipeline {
    
      stage('Test aws cli') { 
         steps {
-        script{
-            if (${GIT_BRANCH} == 'dev') 
-            {
-              AWS_ACCOUNT_ID="517446614341"
-              IAM_ROLE="adminRole"
-            } 
-            else 
-            {
-            AWS_ACCOUNT_ID=""
-            IAM_ROLE=""
-            }
-        }
-        
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh '''
                 aws s3 ls
