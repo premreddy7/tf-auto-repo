@@ -6,7 +6,18 @@ pipeline {
    
      stage('Test aws cli') { 
         steps { 
-           withAWS(roleAccount:'517446614341', role:'adminRole') {
+            if (${GIT_BRANCH} == 'dev') 
+            {
+              AWS_ACCOUNT_ID="517446614341"
+              IAM_ROLE="adminRole"
+            } 
+            else 
+            {
+            AWS_ACCOUNT_ID=""
+            IAM_ROLE=""
+            }
+        
+           withAWS(roleAccount:${AWS_ACCOUNT_ID}, role:${IAM_ROLE}) {
            sh '''
                 aws s3 ls
            '''    
@@ -14,24 +25,30 @@ pipeline {
       }
      }   
    
-     stage('Terraform Init') { 
+     stage('Terraform Init-Validate-Plan') { 
         steps { 
-           withAWS(roleAccount:'517446614341', role:'adminRole') {
+            if (${GIT_BRANCH} == 'dev') 
+            {
+              AWS_ACCOUNT_ID="517446614341"
+              IAM_ROLE="adminRole"
+            } 
+            else 
+            {
+            AWS_ACCOUNT_ID=""
+            IAM_ROLE=""
+            }
+        
+           withAWS(roleAccount:${AWS_ACCOUNT_ID}, role:${IAM_ROLE}) {
            sh '''
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
+                terraform validate -no-color
+                terraform plan -no-color
            '''    
         }
       }
      }
      
-     stage('Terraform Plan') { 
-        steps { 
-           withAWS(roleAccount:'517446614341', role:'adminRole') {
-           sh 'cd terraform/env/${GIT_BRANCH} && terraform plan -no-color && terraform validate -no-color'
-        }
-      }
-     }
      
 stage('Waiting for Approvals') {
             
