@@ -18,14 +18,14 @@ pipeline {
             }
         }        
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh '''
+           sh """
                 cd terraform/env/${GIT_BRANCH}
                 echo "Testing"
-                echo ${params.region_id}
+                echo "${params.region_id}"
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
                 terraform validate -no-color
                 terraform plan -var=region=${params.region}  -no-color
-           '''    
+           """    
         }
      }
      }
