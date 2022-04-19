@@ -79,7 +79,6 @@ stage('Waiting for Approvals') {
    	}
     }
 parameters {
-    #choice(choices: ['dev', 'prod'], description: 'What environment?', name: 'environment')
     string(name: 'region', description: 'Region to deploy Resources')
 }    
 
