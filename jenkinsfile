@@ -79,9 +79,9 @@ stage('Waiting for Approvals') {
                 cd terraform/env/${GIT_BRANCH}
                 export region_id=`cat terraform.tfvars | grep -w region | head -1 | cut -d "=" -f2 | tr -d '"' | tr -d ' '`
                 export glue_workflow=`cat terraform.tfvars | grep -w glue_workflow_name | head -1 | cut -d "=" -f2 | tr -d '"' | tr -d ' '`
-                echo "Region = ${region_id}"
-                echo "Glue-Workflow = ${glue_workflow}"
-                aws glue start-workflow-run --name ${glue_workflow} --region ${region_id}
+                echo "Region = \${region_id}"
+                echo "Glue-Workflow = \${glue_workflow}"
+                aws glue start-workflow-run --name \${glue_workflow} --region \${region_id}
            """
         }
      }
