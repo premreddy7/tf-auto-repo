@@ -1,14 +1,18 @@
 pipeline { 
   
    agent any
+   
+   
+  environment {
+            AWS_ACCOUNT_ID="517446614341"
+            IAM_ROLE="adminRole"
+   }
 
    stages {
    
      stage('Test aws cli') { 
         steps {
         script{
-            AWS_ACCOUNT_ID="517446614341"
-            IAM_ROLE="adminRole"
             if (${GIT_BRANCH} == 'dev') 
             {
               AWS_ACCOUNT_ID="517446614341"
@@ -21,7 +25,7 @@ pipeline {
             }
         }
         
-           withAWS(roleAccount: env.AWS_ACCOUNT_ID , role: env.IAM_ROLE) {
+           withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh '''
                 aws s3 ls
            '''    
