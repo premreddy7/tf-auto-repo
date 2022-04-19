@@ -21,7 +21,7 @@ pipeline {
            sh '''
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
-                terraform validate -var="region=${params.region}" -no-color
+                terraform validate -no-color
                 terraform plan -var="region=${params.region}" -no-color
            '''    
         }
