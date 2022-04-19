@@ -20,7 +20,8 @@ pipeline {
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh '''
                 cd terraform/env/${GIT_BRANCH}
-                echo "region=${params.region}"
+                echo "Testing"
+                echo "region = ${params.region_id}"
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
                 terraform validate -no-color
                 terraform plan -var="region=${params.region}"  -no-color
@@ -80,7 +81,7 @@ stage('Waiting for Approvals') {
    	}
     }
 parameters {
-    string(name: 'region', description: 'Region to deploy Resources')
+    string(name: 'region_id', description: 'Region to deploy Resources')
 }    
 
    }
