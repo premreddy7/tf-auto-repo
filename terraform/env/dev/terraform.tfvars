@@ -1,5 +1,5 @@
 region = "us-east-2"
-env    = "prod"
+env    = "dev"
 glue_job = {
   incorta_ops_da_mv_tbl_to_s3_glue_job = {
     name                    = "incorta_ops_da_mv_tbl_to_s3_glue_job"
