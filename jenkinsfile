@@ -29,6 +29,7 @@ pipeline {
    
      stage('Terraform Init-Validate-Plan') { 
         steps { 
+        script{
             if ( "${GIT_BRANCH}" == "dev" ) 
             {
               AWS_ACCOUNT_ID="517446614341"
@@ -49,6 +50,7 @@ pipeline {
            '''    
         }
      }
+     }
      
      
 stage('Waiting for Approvals') {
@@ -61,6 +63,7 @@ stage('Waiting for Approvals') {
      
      stage('Terraform Apply') { 
         steps { 
+        script{
             if ( "${GIT_BRANCH}" == "dev" ) 
             {
               AWS_ACCOUNT_ID="517446614341"
@@ -76,9 +79,11 @@ stage('Waiting for Approvals') {
            sh 'cd terraform/env/${GIT_BRANCH} && terraform apply -auto-approve -no-color'
         }
       }
+      }
 
      stage('Run Glue Workflow Pipeline') { 
         steps { 
+        script{
             if ( "${GIT_BRANCH}" == "dev" ) 
             {
               AWS_ACCOUNT_ID="517446614341"
@@ -96,6 +101,7 @@ stage('Waiting for Approvals') {
      }
 
    	}
+    }
 parameters {
     choice(choices: ['dev', 'prod'], description: 'What environment?', name: 'environment')
   }    
