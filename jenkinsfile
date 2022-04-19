@@ -7,6 +7,8 @@ pipeline {
      stage('Test aws cli') { 
         steps {
         script{
+            AWS_ACCOUNT_ID="517446614341"
+            IAM_ROLE="adminRole"
             if (${GIT_BRANCH} == 'dev') 
             {
               AWS_ACCOUNT_ID="517446614341"
