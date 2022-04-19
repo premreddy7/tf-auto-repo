@@ -10,7 +10,7 @@ terraform {
 }
 
 module "aws_glue_job" {
-  source   = "../modules/glue-job"
+  source   = "../../modules/glue-job"
   env      = var.env
   glue_job = var.glue_job
 
