@@ -5,7 +5,8 @@ pipeline {
    stages {
    
      stage('Test aws cli') { 
-        steps { 
+        steps {
+        script{
             if (${GIT_BRANCH} == 'dev') 
             {
               AWS_ACCOUNT_ID="517446614341"
@@ -16,6 +17,7 @@ pipeline {
             AWS_ACCOUNT_ID=""
             IAM_ROLE=""
             }
+        }
         
            withAWS(roleAccount:${AWS_ACCOUNT_ID}, role:${IAM_ROLE}) {
            sh '''
