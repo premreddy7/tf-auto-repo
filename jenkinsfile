@@ -54,7 +54,7 @@ stage('Waiting for Approvals') {
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh """
                 cd terraform/env/${GIT_BRANCH} 
-                terraform apply -var=region=${params.region_id} -auto-approve -no-color'
+                terraform apply -var=region=${params.region_id} -auto-approve -no-color
            """        
         }
       }
