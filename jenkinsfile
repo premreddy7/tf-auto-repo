@@ -49,7 +49,6 @@ pipeline {
            '''    
         }
      }
-    }
      
      
 stage('Waiting for Approvals') {
@@ -77,7 +76,6 @@ stage('Waiting for Approvals') {
            sh 'cd terraform/env/${GIT_BRANCH} && terraform apply -auto-approve -no-color'
         }
       }
-     }
 
      stage('Run Glue Workflow Pipeline') { 
         steps { 
@@ -95,7 +93,6 @@ stage('Waiting for Approvals') {
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh 'aws glue start-workflow-run --name cfm-etl-workflow_${params.environment} --region us-east-2'
         }
-      }
      }
 
    	}
