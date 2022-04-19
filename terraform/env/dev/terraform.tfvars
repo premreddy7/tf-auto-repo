@@ -81,7 +81,7 @@ glue_job = {
 }
 
 bucket_name   = "glue-job-workflow-bucket"
-create_bucket = false
+create_bucket = true
 
 ### Glue Workflow ###
 glue_workflow_name = "cfm-etl-workflow"
