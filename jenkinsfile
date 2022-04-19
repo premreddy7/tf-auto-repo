@@ -76,6 +76,9 @@ stage('Waiting for Approvals') {
         }        
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh """
+                cd terraform/env/${GIT_BRANCH}
+                region_id=`cat terraform.tfvars | grep -w region | head -1 | cut -d "=" -f2 | tr -d '"' | tr -d ' '`
+                glue_workflow=`cat terraform.tfvars | grep -w glue_workflow_name | head -1 | cut -d "=" -f2 | tr -d '"' | tr -d ' '`
                 aws glue start-workflow-run --name ${glue_workflow} --region ${region_id}
            """
         }
