@@ -30,7 +30,7 @@ pipeline {
      stage('Terraform Init-Validate-Plan') { 
         steps { 
         
-           withAWS(roleAccount:"123", role:"role" {
+           withAWS(roleAccount:"123", role:"role") {
            sh '''
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
