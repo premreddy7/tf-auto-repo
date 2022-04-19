@@ -19,7 +19,7 @@ pipeline {
             }
         }
         
-           withAWS(roleAccount:${AWS_ACCOUNT_ID}, role:${IAM_ROLE}) {
+           withAWS(roleAccount: env.AWS_ACCOUNT_ID , role: env.IAM_ROLE) {
            sh '''
                 aws s3 ls
            '''    
@@ -29,16 +29,6 @@ pipeline {
    
      stage('Terraform Init-Validate-Plan') { 
         steps { 
-            if (${GIT_BRANCH} == 'dev') 
-            {
-              AWS_ACCOUNT_ID="517446614341"
-              IAM_ROLE="adminRole"
-            } 
-            else 
-            {
-            AWS_ACCOUNT_ID=""
-            IAM_ROLE=""
-            }
         
            withAWS(roleAccount:${AWS_ACCOUNT_ID}, role:${IAM_ROLE}) {
            sh '''
