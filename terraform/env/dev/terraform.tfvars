@@ -1,8 +1,9 @@
-env    = "dev"
+region = "us-east-2"
+env    = "prod"
 glue_job = {
   incorta_ops_da_mv_tbl_to_s3_glue_job = {
-    name                    = "incorta_ops_da_mv_tbl_to_s3_glue_job_dev"
-    script_location         = "../scripts/incorta_to_s3.py"
+    name                    = "incorta_ops_da_mv_tbl_to_s3_glue_job"
+    script_location         = "../../scripts/incorta_to_s3.py"
     iam_role_name           = ""
     iam_role_arn            = "arn:aws:iam::517446614341:role/first_glue_job_test"
     managed_role_policy     = []
@@ -14,8 +15,8 @@ glue_job = {
 
   },
   s3_to_redishift = {
-    name                    = "s3_to_redishift_dev"
-    script_location         = "../scripts/s3_to_redishift.py"
+    name                    = "s3_to_redishift"
+    script_location         = "../../scripts/s3_to_redishift.py"
     iam_role_name           = ""
     iam_role_arn            = "arn:aws:iam::517446614341:role/first_glue_job_test"
     managed_role_policy     = []
@@ -27,8 +28,8 @@ glue_job = {
   },
 
   update_flag_python = {
-    name                    = "update_flag_python_dev"
-    script_location         = "../scripts/update_flag_python.py"
+    name                    = "update_flag_python"
+    script_location         = "../../scripts/update_flag_python.py"
     iam_role_name           = ""
     iam_role_arn            = "arn:aws:iam::517446614341:role/first_glue_job_test"
     managed_role_policy     = []
@@ -40,8 +41,8 @@ glue_job = {
   },
 
   stored_date_value = {
-    name                    = "stored_date_value_dev"
-    script_location         = "../scripts/stored_date_value.py"
+    name                    = "stored_date_value"
+    script_location         = "../../scripts/stored_date_value.py"
     iam_role_name           = ""
     iam_role_arn            = "arn:aws:iam::517446614341:role/first_glue_job_test"
     managed_role_policy     = []
@@ -53,8 +54,8 @@ glue_job = {
   },
 
   archived_incorta_files = {
-    name                    = "archived_incorta_files_dev"
-    script_location         = "../scripts/archived_incorta_files.py"
+    name                    = "archived_incorta_files"
+    script_location         = "../../scripts/archived_incorta_files.py"
     iam_role_name           = ""
     iam_role_arn            = "arn:aws:iam::517446614341:role/first_glue_job_test"
     managed_role_policy     = []
@@ -66,8 +67,8 @@ glue_job = {
   },
 
   output_from_redshift_to_s3_parquet = {
-    name                    = "output_from_redshift_to_s3_parquet_dev"
-    script_location         = "../scripts/output_from_redshift_to_s3_parquet.py"
+    name                    = "output_from_redshift_to_s3_parquet"
+    script_location         = "../../scripts/output_from_redshift_to_s3_parquet.py"
     iam_role_name           = ""
     iam_role_arn            = "arn:aws:iam::517446614341:role/first_glue_job_test"
     managed_role_policy     = []
@@ -80,9 +81,9 @@ glue_job = {
 }
 
 bucket_name   = "glue-job-workflow-bucket"
-create_bucket = true
+create_bucket = false
 
 ### Glue Workflow ###
-glue_workflow_name = "cfm-etl-workflow_dev"
+glue_workflow_name = "cfm-etl-workflow"
 cron_expression    = "cron(0 10 * * ? *)"
 
