@@ -3,30 +3,6 @@ pipeline {
    agent any
    
    stages {
-   
-     stage('Test aws cli') { 
-        steps {
-        script{
-            if ( "${GIT_BRANCH}" == "dev" ) 
-            {
-              AWS_ACCOUNT_ID="517446614341"
-              IAM_ROLE="adminRole"
-            } 
-            else 
-            {
-            AWS_ACCOUNT_ID=""
-            IAM_ROLE=""
-            }
-        }        
-           withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh '''
-                echo ${GIT_BRANCH}
-                aws s3 ls
-           '''    
-        }
-      }
-     }   
-   
      stage('Terraform Init-Validate-Plan') { 
         steps { 
         script{
@@ -45,8 +21,8 @@ pipeline {
            sh '''
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
-                terraform validate -no-color
-                terraform plan -no-color
+                terraform validate -var="region=${params.region}" -no-color
+                terraform plan -var="region=${params.region}" -no-color
            '''    
         }
      }
@@ -76,7 +52,7 @@ stage('Waiting for Approvals') {
             }
         }        
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh 'cd terraform/env/${GIT_BRANCH} && terraform apply -auto-approve -no-color'
+           sh 'cd terraform/env/${GIT_BRANCH} && terraform apply -var="region=${params.region}" -auto-approve -no-color'
         }
       }
       }
@@ -96,14 +72,15 @@ stage('Waiting for Approvals') {
             }
         }        
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh 'aws glue start-workflow-run --name cfm-etl-workflow_${params.environment} --region us-east-2'
+           sh "aws glue start-workflow-run --name cfm-etl-workflow --region ${params.region}"
         }
      }
 
    	}
     }
 parameters {
-    choice(choices: ['dev', 'prod'], description: 'What environment?', name: 'environment')
-  }    
+    #choice(choices: ['dev', 'prod'], description: 'What environment?', name: 'environment')
+    string(name: 'region', description: 'Region to deploy Resources')
+}    
 
    }

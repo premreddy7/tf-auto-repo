@@ -1,4 +1,3 @@
-region = "us-east-2"
 env    = "dev"
 glue_job = {
   incorta_ops_da_mv_tbl_to_s3_glue_job = {
