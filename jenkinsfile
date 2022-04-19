@@ -20,11 +20,9 @@ pipeline {
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh """
                 cd terraform/env/${GIT_BRANCH}
-                echo "Testing"
-                echo "${params.region_id}"
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
                 terraform validate -no-color
-                terraform plan -var=region=${params.region}  -no-color
+                terraform plan -var=region=${params.region_id}  -no-color
            """    
         }
      }
@@ -54,7 +52,10 @@ stage('Waiting for Approvals') {
             }
         }        
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh 'cd terraform/env/${GIT_BRANCH} && terraform apply -var="region=${params.region}" -auto-approve -no-color'
+           sh """
+                cd terraform/env/${GIT_BRANCH} 
+                terraform apply -var=region=${params.region_id} -auto-approve -no-color'
+           """        
         }
       }
       }
@@ -74,7 +75,7 @@ stage('Waiting for Approvals') {
             }
         }        
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh "aws glue start-workflow-run --name cfm-etl-workflow --region ${params.region}"
+           sh "aws glue start-workflow-run --name cfm-etl-workflow --region ${params.region_id}"
         }
      }
 
