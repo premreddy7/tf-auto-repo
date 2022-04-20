@@ -1,4 +1,5 @@
-def getAccountID() {
+def getAccountID() 
+{
     if ( "${GIT_BRANCH}" == "dev" ) 
     {
        return "${DEV_AWS_ACCOUNT_ID}"
@@ -9,21 +10,26 @@ def getAccountID() {
     }
 }
 
-pipeline { 
-  
+pipeline 
+{ 
    agent any
    
-   environment {
+   environment 
+   {
 
     AWS_ACCOUNT_ID = getAccountID()
     IAM_ROLE="adminRole"
-}
+   }
 
-   stages {
-     stage('Terraform Init-Validate-Plan') { 
-        steps {       
-           withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh """
+   stages 
+   {
+     stage('Terraform Init-Validate-Plan') 
+     { 
+        steps 
+        {       
+            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") 
+        {
+            sh """
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
                 terraform validate -no-color
@@ -34,29 +40,36 @@ pipeline {
      }
      
      
-stage('Waiting for Approvals') {
-            
-      steps{
-          input('Plan Validated? Please approve to create resources in AWS?')
-			  }
-      }    
+     stage('Waiting for Approvals') 
+     {
+        steps
+        {
+            input('Plan Validated? Please approve to create resources in AWS?')	  
+        }
+     }    
      
      
-     stage('Terraform Apply') { 
-        steps {         
-           withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh """
+     stage('Terraform Apply') 
+     { 
+        steps 
+        {         
+            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") 
+            {
+            sh """
                 cd terraform/env/${GIT_BRANCH} 
                 terraform apply -auto-approve -no-color
            """        
+            }
         }
-      }
-      }
+     }
 
-     stage('Run Glue Workflow Pipeline') { 
-        steps {         
-           withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
-           sh """
+     stage('Run Glue Workflow Pipeline') 
+     { 
+        steps 
+        {         
+            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") 
+            {
+            sh """
                 cd terraform/env/${GIT_BRANCH}
                 export region_id=`cat terraform.tfvars | grep -w region | head -1 | cut -d "=" -f2 | tr -d '"' | tr -d ' '`
                 export glue_workflow=`cat terraform.tfvars | grep -w glue_workflow_name | head -1 | cut -d "=" -f2 | tr -d '"' | tr -d ' '`
@@ -64,9 +77,8 @@ stage('Waiting for Approvals') {
                 echo "Glue-Workflow = \${glue_workflow}"
                 aws glue start-workflow-run --name \${glue_workflow} --region \${region_id}
            """
+            }
         }
-     }
-
    	}
-    }
    }
+}
