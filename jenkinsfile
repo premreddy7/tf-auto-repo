@@ -1,22 +1,27 @@
+def getAccountID() {
+    if ( "${GIT_BRANCH}" == "dev" ) 
+    {
+       return "${DEV_AWS_ACCOUNT_ID}"
+    }
+    else
+    {
+        return "${PROD_AWS_ACCOUNT_ID}"
+    }
+}
+
 pipeline { 
   
    agent any
    
+   environment {
+
+    AWS_ACCOUNT_ID = getAccountID()
+    IAM_ROLE="adminRole"
+}
+
    stages {
      stage('Terraform Init-Validate-Plan') { 
-        steps { 
-        script{
-            if ( "${GIT_BRANCH}" == "dev" ) 
-            {
-              AWS_ACCOUNT_ID="517446614341"
-              IAM_ROLE="adminRole"
-            } 
-            else 
-            {
-            AWS_ACCOUNT_ID=""
-            IAM_ROLE=""
-            }
-        }        
+        steps {       
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh """
                 cd terraform/env/${GIT_BRANCH}
@@ -38,19 +43,7 @@ stage('Waiting for Approvals') {
      
      
      stage('Terraform Apply') { 
-        steps { 
-        script{
-            if ( "${GIT_BRANCH}" == "dev" ) 
-            {
-              AWS_ACCOUNT_ID="517446614341"
-              IAM_ROLE="adminRole"
-            } 
-            else 
-            {
-            AWS_ACCOUNT_ID=""
-            IAM_ROLE=""
-            }
-        }        
+        steps {         
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh """
                 cd terraform/env/${GIT_BRANCH} 
@@ -61,19 +54,7 @@ stage('Waiting for Approvals') {
       }
 
      stage('Run Glue Workflow Pipeline') { 
-        steps { 
-        script{
-            if ( "${GIT_BRANCH}" == "dev" ) 
-            {
-              AWS_ACCOUNT_ID="517446614341"
-              IAM_ROLE="adminRole"
-            } 
-            else 
-            {
-            AWS_ACCOUNT_ID=""
-            IAM_ROLE=""
-            }
-        }        
+        steps {         
            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") {
            sh """
                 cd terraform/env/${GIT_BRANCH}
