@@ -10,12 +10,13 @@ terraform {
 }
 
 module "aws_glue_job" {
-  source   = "../../modules/glue-job"
-  env      = var.env
-  glue_job = var.glue_job
+  source          = "../../modules/glue-job"
+  env             = var.env
+  glue_job        = var.glue_job
+  crawler_details = var.crawler_details
+  bucket_name     = var.bucket_name
+  create_bucket   = var.create_bucket
 
-  bucket_name   = var.bucket_name
-  create_bucket = var.create_bucket
 
   ### Glue Workflow ###
   glue_workflow_name = var.glue_workflow_name

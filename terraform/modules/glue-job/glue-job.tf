@@ -33,37 +33,42 @@ resource "aws_iam_role" "glue_role" {
   managed_policy_arns = each.value.managed_role_policy
 }
 
-#resource "aws_iam_policy" "iam_policy" {
-#for_each           = { for k in compact([for k, v in var.glue_job : v.iam_role_arn == "" ? k : ""]) : k => var.glue_job[k] }
-#  name = "${each.value.iam_role_name}-policy"
-#  policy = "${file(each.value.role_policy_path)}"
-#}
-
-#resource "aws_glue_catalog_database" "aws_glue_catalog_database" {
-#  name = var.crawler_db_name
-#}
-
 ### AWS Glue Crawler ###
+resource "aws_glue_catalog_database" "aws_glue_catalog_database" {
+  for_each    = var.crawler_details
+  name        = each.value.db_name
+  description = each.value.db_description
+}
 
-#resource "aws_glue_connection" "jdbc_conn" {
-#  connection_properties = {
-#    JDBC_CONNECTION_URL = var.jdbc_url
-#    PASSWORD            = var.jdbc_pass
-#    USERNAME            = var.jdbc_user
-#  }
-#  name = var.crawler_connection_name
-#}
-#
-#resource "aws_glue_crawler" "crawler" {
-#  database_name = aws_glue_catalog_database.aws_glue_catalog_database.name
-#  name          = var.crawler_name
-#  role          = var.crawler_role_arn
-#
-#  jdbc_target {
-#    connection_name = aws_glue_connection.jdbc_conn.name
-#    path            = var.jdbc_target_path
-#  }
-#}
+resource "aws_glue_connection" "jdbc_conn" {
+  for_each = var.crawler_details
+  connection_properties = {
+    JDBC_CONNECTION_URL = each.value.jdbc_url
+    PASSWORD            = each.value.jdbc_pass
+    USERNAME            = each.value.jdbc_user
+  }
+  name        = each.value.crawler_connection_name
+  description = each.value.connection_description
+
+  physical_connection_requirements {
+    availability_zone      = each.value.az
+    security_group_id_list = each.value.sec_group_id
+    subnet_id              = each.value.subnet_id
+  }
+}
+
+resource "aws_glue_crawler" "crawler" {
+  for_each      = var.crawler_details
+  database_name = aws_glue_catalog_database.aws_glue_catalog_database[each.key].name
+  name          = each.value.crawler_name
+  role          = each.value.crawler_role_arn
+  description   = each.value.crawler_description
+
+  jdbc_target {
+    connection_name = aws_glue_connection.jdbc_conn[each.key].name
+    path            = each.value.jdbc_target_path
+  }
+}
 
 ### Glue Workflow ###
 resource "aws_glue_workflow" "wf" {

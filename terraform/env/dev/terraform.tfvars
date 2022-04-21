@@ -80,6 +80,27 @@ glue_job = {
   }
 }
 
+### Crawler Details ###
+crawler_details = {
+  incrota_crawler_OPS_DA_MV = {
+    crawler_name            = "incrota_crawler_OPS_DA_MV"
+    crawler_role_arn        = "arn:aws:iam::517446614341:role/first_glue_job_test"
+    db_name                 = "ospr_redshift"
+    jdbc_url                = "jdbc:postgresql://10.240.82.13:5438/inc_ebs"
+    jdbc_user               = "HBI_INC_OPS_DA_ACCT"
+    jdbc_pass               = "test"
+    az                      = "us-east-2a"
+    sec_group_id            = ["sg-0abdb3536666f63b7"]
+    subnet_id               = "subnet-0f1ab85b3aeba21a8"
+    crawler_connection_name = "incorta_postgresql_connection"
+    jdbc_target_path        = "database-name/%"
+    crawler_description     = ""
+    connection_description  = ""
+    db_description          = ""
+
+  }
+
+}
 bucket_name   = "glue-job-workflow-bucket"
 create_bucket = true
 
