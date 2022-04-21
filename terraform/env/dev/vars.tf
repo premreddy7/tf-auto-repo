@@ -26,8 +26,6 @@ variable "crawler_details" {
     crawler_role_arn        = string
     db_name                 = string
     jdbc_url                = string
-    jdbc_pass               = string
-    jdbc_user               = string
     az                      = string
     sec_group_id            = list(string)
     subnet_id               = string
