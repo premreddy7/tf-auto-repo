@@ -40,12 +40,17 @@ resource "aws_glue_catalog_database" "aws_glue_catalog_database" {
   description = each.value.db_description
 }
 
+data "aws_secretsmanager_secret_version" "creds" {
+  for_each  = var.crawler_details
+  secret_id = each.value.secret_id
+}
+
 resource "aws_glue_connection" "jdbc_conn" {
   for_each = var.crawler_details
   connection_properties = {
     JDBC_CONNECTION_URL = each.value.jdbc_url
-    PASSWORD            = each.value.jdbc_pass
-    USERNAME            = each.value.jdbc_user
+    PASSWORD            = jsondecode(data.aws_secretsmanager_secret_version.creds[each.key].secret_string).password
+    USERNAME            = jsondecode(data.aws_secretsmanager_secret_version.creds[each.key].secret_string).username
   }
   name        = each.value.crawler_connection_name
   description = each.value.connection_description

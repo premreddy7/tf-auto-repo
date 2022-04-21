@@ -97,6 +97,7 @@ crawler_details = {
     crawler_description     = ""
     connection_description  = ""
     db_description          = ""
+    secret_id               = "db_creds"
 
   }
 

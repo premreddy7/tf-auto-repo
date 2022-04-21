@@ -35,6 +35,7 @@ variable "crawler_details" {
     crawler_description     = string
     connection_description  = string
     db_description          = string
+    secret_id               = string
 
     })
   )
