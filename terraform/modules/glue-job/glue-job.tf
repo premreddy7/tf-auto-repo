@@ -19,10 +19,11 @@ resource "aws_glue_job" "glue_job" {
   command {
     script_location = "s3://${aws_s3_bucket.bucket[0].id}/${var.env}/${basename(each.value.script_location)}"
     python_version  = each.value.python_version
+    name            = each.value.jobtype
   }
   glue_version      = each.value.glue_version
-  number_of_workers = each.value.number_of_workers
-  worker_type       = each.value.worker_type
+  number_of_workers = each.value.jobtype == "pythonshell" ? null : each.value.number_of_workers
+  worker_type       = each.value.jobtype == "pythonshell" ? null : each.value.worker_type
 }
 
 

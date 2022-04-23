@@ -6,6 +6,7 @@ variable "glue_job" {
     iam_role_arn            = string
     managed_role_policy     = list(string)
     assume_role_policy_path = string
+    jobtype                 = string
     python_version          = string
     glue_version            = string
     number_of_workers       = string
