@@ -11,6 +11,8 @@ variable "glue_job" {
     glue_version            = string
     number_of_workers       = string
     worker_type             = string
+    connections             = list(string)
+    default_arguments       = map(string)
     })
   )
 }

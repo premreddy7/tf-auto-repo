@@ -12,10 +12,11 @@ resource "aws_s3_object" "object" {
 }
 
 resource "aws_glue_job" "glue_job" {
-  for_each = var.glue_job
-  name     = each.value.name
-  role_arn = each.value.iam_role_name != "" ? aws_iam_role.glue_role[each.key].arn : each.value.iam_role_arn
-
+  for_each          = var.glue_job
+  name              = each.value.name
+  role_arn          = each.value.iam_role_name != "" ? aws_iam_role.glue_role[each.key].arn : each.value.iam_role_arn
+  connections       = each.value.connections
+  default_arguments = each.value.default_arguments
   command {
     script_location = "s3://${aws_s3_bucket.bucket[0].id}/${var.env}/${basename(each.value.script_location)}"
     python_version  = each.value.python_version

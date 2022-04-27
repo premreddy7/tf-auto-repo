@@ -13,8 +13,10 @@ glue_job = {
     glue_version            = "3.0"
     number_of_workers       = "10"
     worker_type             = "G.1X"
+    connections             = []
+    default_arguments       = {}
+  },
 
-  }
   s3_to_redishift = {
     name                    = "s3_to_redishift"
     script_location         = "../../scripts/s3_to_redishift.py"
@@ -27,6 +29,8 @@ glue_job = {
     glue_version            = "3.0"
     number_of_workers       = "10"
     worker_type             = "G.1X"
+    connections             = []
+    default_arguments       = {}
   },
 
   update_flag_python = {
@@ -41,8 +45,10 @@ glue_job = {
     glue_version            = "3.0"
     number_of_workers       = "10"
     worker_type             = "G.1X"
+    connections             = []
+    default_arguments       = {}
   },
-  #
+
   stored_date_value = {
     name                    = "stored_date_value"
     script_location         = "../../scripts/stored_date_value.py"
@@ -55,6 +61,8 @@ glue_job = {
     glue_version            = "3.0"
     number_of_workers       = "10"
     worker_type             = "G.1X"
+    connections             = []
+    default_arguments       = {}
   },
 
   archived_incorta_files = {
@@ -69,6 +77,8 @@ glue_job = {
     glue_version            = "3.0"
     number_of_workers       = "10"
     worker_type             = "G.1X"
+    connections             = []
+    default_arguments       = {}
   },
 
   output_from_redshift_to_s3_parquet = {
@@ -83,6 +93,14 @@ glue_job = {
     glue_version            = "3.0"
     number_of_workers       = "10"
     worker_type             = "G.1X"
+    connections             = ["incorta_postgresql_connection"]
+    default_arguments = {
+      "--TempDir"                          = "s3://glue-job-workflow-bucket/"
+      "--enable-continuous-cloudwatch-log" = "true"
+      "--enable-metrics"                   = "true"
+      "--job-bookmark-option"              = "job-bookmark-disable"
+      "--extra-py-files"                   = "s3://glue-job-workflow-bucket/test.jar"
+    }
   }
 }
 
@@ -118,11 +136,9 @@ crawler_details = {
     crawler_description     = ""
     connection_description  = ""
     db_description          = ""
-
-
   }
-
 }
+
 bucket_name   = "glue-job-workflow-bucket"
 create_bucket = true
 
