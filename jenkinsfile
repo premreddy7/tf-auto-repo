@@ -39,10 +39,10 @@ pipeline
         steps 
         {             
            sh """
-	            mkdir -p $HOME/.aws
-                cp -v .aws-creds $HOME/.aws/credentials
-                unset AWS_WEB_IDENTITY_TOKEN_FILE
-
+                set -a
+                source .aws-creds
+                set +a
+                
                 # Terraform commands to initialize, validate and run a plan of terraform code 
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
