@@ -12,34 +12,48 @@ def getAccountID()
 
 pipeline 
 { 
-   agent any
+  agent 
+  {
+    kubernetes 
+    {
+        yaml """
+            apiVersion: v1
+            kind: Pod
+            spec:
+                # Service Account Name to insert will be provided once previous steps are completed (refer to step 2)
+                serviceAccountName: ospr-coin
+                restartPolicy: Never
+                containers:
+                # Add more containers to complete the job
+                - name: awscli
+                  image: mikesir87/aws-cli:2.0.25
+                  command: ['cat']
+                  tty: true
+                - name: terraform
+                  image: hashicorp/terraform:0.12.29
+                  command: ['cat']
+                  tty: true
+        """
+    }
+  }
    
    environment 
    {
 
     AWS_ACCOUNT_ID = getAccountID()
-    IAM_ROLE="adminRole"
+    IAM_ROLE="coin_devops_cbc_master_role"
    }
 
    stages 
    {
-     stage('AWS-Config') 
-     { 
-        steps 
-        {             
-           sh """
-                # AWS Credentials Config
-                echo \$(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \$(aws sts assume-role --role-arn arn:aws:iam::\${AWS_ACCOUNT_ID}:role/\${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text)) tr ' ' '\n' > .aws-creds
-           """
-        }
-     }   
      stage('Terraform Init-Validate-Plan') 
      { 
         steps 
         {             
            sh """
-                source \${HOME}/.aws-creds
-                
+                # AWS Credentials Config
+                export \$(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \$(aws sts assume-role --role-arn arn:aws:iam::\${AWS_ACCOUNT_ID}:role/\${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text))
+
                 # Terraform commands to initialize, validate and run a plan of terraform code 
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
@@ -63,7 +77,8 @@ pipeline
         steps 
         {         
             sh """
-                source \${HOME}/.aws-creds            
+                # AWS Credentials Config
+                export \$(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \$(aws sts assume-role --role-arn arn:aws:iam::\${AWS_ACCOUNT_ID}:role/\${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text))
                 
                 # Run terraform apply to create resources on target cloud
                 cd terraform/env/${GIT_BRANCH} 
@@ -77,7 +92,8 @@ pipeline
         steps 
         {         
             sh """
-                source \${HOME}/.aws-creds
+                # AWS Credentials Config
+                export \$(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \$(aws sts assume-role --role-arn arn:aws:iam::\${AWS_ACCOUNT_ID}:role/\${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text))
                 
                 # Trigger etl workflow pipeline
                 cd terraform/env/${GIT_BRANCH}
