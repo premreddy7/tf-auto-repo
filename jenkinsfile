@@ -40,7 +40,7 @@ pipeline
         {             
            sh """
                 set -a
-                source .aws-creds
+                #source .aws-creds
                 set +a
                 
                 # Terraform commands to initialize, validate and run a plan of terraform code 
@@ -67,7 +67,7 @@ pipeline
         {         
             sh """
                 set -a 
-                source .aws-creds
+                #source .aws-creds
                 set +a
 
                 # Run terraform apply to create resources on target cloud
@@ -83,7 +83,7 @@ pipeline
         {         
             sh """
                 set -a 
-                source .aws-creds
+                #source .aws-creds
                 set +a
  
                 # Trigger etl workflow pipeline
