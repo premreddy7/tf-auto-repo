@@ -29,6 +29,7 @@ pipeline
         {       
            sh """
                 # AWS Credentials Config
+                export $(printf "AWS_ACCESS_KEY_ID="test")
                 # Terraform commands to initialize, validate and run a plan of terraform code 
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
