@@ -27,19 +27,19 @@ pipeline
      { 
         steps 
         {       
-            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") 
-        {
             sh """
+                # AWS Credentials Config            
+                export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role --role-arn arn:aws:iam::${IAM_ROLE}:role/${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text))
+                
+                # Terraform commands to initialize, validate and run a plan of terraform code 
                 cd terraform/env/${GIT_BRANCH}
                 terraform init -backend-config="key=terraform-tfstate/env/${GIT_BRANCH}/terraform.tfstate" -no-color
                 terraform validate -no-color
                 terraform plan  -no-color
-           """    
+           """
         }
      }
-     }
-     
-     
+
      stage('Waiting for Approvals') 
      {
         steps
@@ -53,13 +53,14 @@ pipeline
      { 
         steps 
         {         
-            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") 
-            {
             sh """
+                # AWS Credentials Config
+                export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role --role-arn arn:aws:iam::${IAM_ROLE}:role/${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text))
+                
+                # Run terraform apply to create resources on target cloud
                 cd terraform/env/${GIT_BRANCH} 
                 terraform apply -auto-approve -no-color
-           """        
-            }
+           """
         }
      }
 
@@ -67,9 +68,11 @@ pipeline
      { 
         steps 
         {         
-            withAWS(roleAccount: "${AWS_ACCOUNT_ID}" , role: "${IAM_ROLE}") 
-            {
             sh """
+                # AWS Credentials Config
+                export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role --role-arn arn:aws:iam::${IAM_ROLE}:role/${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text)) 
+                
+                # Trigger etl workflow pipeline
                 cd terraform/env/${GIT_BRANCH}
                 export region_id=`cat terraform.tfvars | grep -w region | head -1 | cut -d "=" -f2 | tr -d '"' | tr -d ' '`
                 export glue_workflow=`cat terraform.tfvars | grep -w glue_workflow_name | head -1 | cut -d "=" -f2 | tr -d '"' | tr -d ' '`
@@ -77,7 +80,6 @@ pipeline
                 echo "Glue-Workflow = \${glue_workflow}"
                 aws glue start-workflow-run --name \${glue_workflow} --region \${region_id}
            """
-            }
         }
    	}
    }
