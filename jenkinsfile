@@ -29,7 +29,7 @@ pipeline
         {       
            sh """
                 # AWS Credentials Config
-                export \$(printf AWS_ACCESS_KEY_ID="test")
+                export \$(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role --role-arn arn:aws:iam::${IAM_ROLE}:role/${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text))
                 echo "\${AWS_ACCESS_KEY_ID}"
                 # Terraform commands to initialize, validate and run a plan of terraform code 
                 cd terraform/env/${GIT_BRANCH}
