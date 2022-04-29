@@ -30,7 +30,7 @@ pipeline
            sh """
                 # AWS Credentials Config
                 env
-                echo \$(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \$(aws sts assume-role --role-arn arn:aws:iam::\${AWS_ACCOUNT_ID}:role/\${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text)) | tr ' ' '\n' > \"${GITHUB_ACTION_PATH}"/.aws-creds
+                echo \$(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \$(aws sts assume-role --role-arn arn:aws:iam::\${AWS_ACCOUNT_ID}:role/\${IAM_ROLE} --role-session-name terraform --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --output text)) | tr ' ' '\n' > .aws-creds
            """
         }
      }   
@@ -39,9 +39,9 @@ pipeline
         steps 
         {             
            sh """
-                set -a 
-                source \${GITHUB_ACTION_PATH}/.aws-creds
-                set +a
+	            mkdir -p $HOME/.aws
+                cp -v .aws-creds $HOME/.aws/credentials
+                unset AWS_WEB_IDENTITY_TOKEN_FILE
 
                 # Terraform commands to initialize, validate and run a plan of terraform code 
                 cd terraform/env/${GIT_BRANCH}
@@ -67,7 +67,7 @@ pipeline
         {         
             sh """
                 set -a 
-                source \${GITHUB_ACTION_PATH}/.aws-creds
+                source .aws-creds
                 set +a
 
                 # Run terraform apply to create resources on target cloud
@@ -83,7 +83,7 @@ pipeline
         {         
             sh """
                 set -a 
-                source \${GITHUB_ACTION_PATH}/.aws-creds
+                source .aws-creds
                 set +a
  
                 # Trigger etl workflow pipeline
