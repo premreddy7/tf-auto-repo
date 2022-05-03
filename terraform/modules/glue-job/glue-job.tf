@@ -1,6 +1,9 @@
 resource "aws_s3_bucket" "bucket" {
   count  = var.create_bucket == true ? 1 : 0
   bucket = var.bucket_name #"glue-job-bucket"
+  versioning {
+    enabled = true
+  }
 }
 
 resource "aws_s3_object" "object" {
@@ -8,7 +11,7 @@ resource "aws_s3_object" "object" {
   bucket   = aws_s3_bucket.bucket[0].id
   key      = "${var.env}/${basename(each.value.script_location)}"
   source   = each.value.script_location
-  #etag     = filemd5("${basename(each.value.script_location)}")
+  etag     = filemd5(each.value.script_location)
 }
 
 resource "aws_glue_job" "glue_job" {
