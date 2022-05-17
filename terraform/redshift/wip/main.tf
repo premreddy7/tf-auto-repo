@@ -75,7 +75,7 @@ module "redshift" {
     ospr-coin-redshift-sg = {
       name        = "ospr-coin-redshift-sg"
       vpc_id      = data.aws_vpc.default.id
-      tags        = { project_name = "coin", environment = "dev" }
+      tags        = { Name= "ospr-coin-redshift-sg", project_name = "coin", environment = "dev" }
       description = "all inbound rules to redshift"
       sec_ingress_rule = [
 
@@ -167,7 +167,7 @@ module "redshift" {
       name        = "ospr-coin-proxy_sg"
       vpc_id      = data.aws_vpc.default.id
       description = "all inbound rules to proxy"
-      tags        = { project_name = "coin", environment = "dev" }
+      tags        = { Name="ospr-coin-proxy_sg", project_name = "coin", environment = "dev" }
       sec_ingress_rule = [
         {
           description      = "glue connection to incorta hbi proxy"
@@ -198,10 +198,9 @@ module "redshift" {
     },
     ospr-coin-incorta_sg = {
       name        = "ospr-coin-incorta-sg"
-      tags        = { project_name = "coin", environment = "dev" }
+      tags        = { Name="ospr-coin-incorta_sg", project_name = "coin", environment = "dev" }
       vpc_id      = data.aws_vpc.default.id
       description = "all inbound rules to incorta"
-      tags        = {}
       sec_ingress_rule = [
         {
           description      = "self - required for glue conneciton to work"

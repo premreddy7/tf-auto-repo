@@ -37,7 +37,6 @@ resource "aws_security_group" "default" {
   tags = each.value.tags
   lifecycle {
     ignore_changes = [
-      tags
     ]
   }
 
