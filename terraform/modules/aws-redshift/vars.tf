@@ -262,3 +262,49 @@ variable "sec_group" {
   }
 }
 
+variable "instance_details" {
+  type = map(object({
+    instance_type           = string
+    iam_instance_profile    = string
+    disable_api_termination = string
+    ebs_optimized           = string
+    get_password_data       = list(string)
+    hibernation             = string
+    monitoring              = string
+    user_data               = string
+    ec2_tag                 = string
+    })
+  )
+  default = {
+
+    ec1 = {
+      instance_type           = ""
+      iam_instance_profile    = ""
+      disable_api_termination = false
+      ebs_optimized           = false
+      get_password_data       = false
+      hibernation             = false
+      monitoring              = false
+      user_data               = proxy_user_data.sh
+      ec2_tag                 = ""
+
+    },
+
+    ec2 = {
+      instance_type           = ""
+      iam_instance_profile    = ""
+      disable_api_termination = false
+      ebs_optimized           = false
+      get_password_data       = false
+      hibernation             = false
+      monitoring              = false
+      user_data               = proxy_user_data.sh
+      ec2_tag                 = ""
+
+    }
+
+  }
+}
+
+
+

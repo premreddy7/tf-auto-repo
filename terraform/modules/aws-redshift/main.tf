@@ -201,17 +201,18 @@ resource "aws_glue_connection" "incorta_conn" {
 
 ##### Transport Proxy Instances configuration configuration details begin #####
 
-resource "aws_instance" "proxy_1a" {
+resource "aws_instance" "default" {
+  for_each                = var.instance_details
   ami                     = data.aws_ami.amzn2_gi.id
-  instance_type           = var.proxy_instance_type
-  iam_instance_profile    = var.proxy_instance_role
-  disable_api_termination = false
-  ebs_optimized           = false
-  get_password_data       = false
-  hibernation             = false
-  monitoring              = false
+  instance_type           = each.value.instance_type
+  iam_instance_profile    = each.value.iam_instance_profile
+  disable_api_termination = each.value.disable_api_termination
+  ebs_optimized           = each.value.ebs_optimized
+  get_password_data       = each.value.get_password_data
+  hibernation             = each.value.hibernation
+  monitoring              = each.value.monitoring
 
-  user_data = file("proxy_user_data.sh")
+  user_data = file(each.value.user_data)
 
   network_interface {
     network_interface_id = data.aws_network_interface.trans_1a.id
@@ -226,36 +227,9 @@ resource "aws_instance" "proxy_1a" {
       tags
     ]
   }
-  tags = var.ec2_tag
+  tags = each.value.ec2_tag
 }
 
-resource "aws_instance" "proxy_1b" {
-  ami                     = data.aws_ami.amzn2_gi.id
-  instance_type           = var.proxy_instance_type
-  iam_instance_profile    = var.proxy_instance_role
-  disable_api_termination = false
-  ebs_optimized           = false
-  get_password_data       = false
-  hibernation             = false
-  monitoring              = false
-
-
-  user_data = file("proxy_user_data.sh")
-  network_interface {
-    network_interface_id = data.aws_network_interface.trans_1b.id
-    device_index         = 0
-  }
-  lifecycle {
-    ignore_changes = [
-      ami,
-      instance_type,
-      user_data,
-      tags
-    ]
-  }
-
-  tags = var.ec2_tag
-}
 
 
 ##### Transport Proxy Instances configuration configuration details end #####
