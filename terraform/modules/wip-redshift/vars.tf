@@ -74,3 +74,17 @@ variable "sec_group" {
 }
 
 variable "coinrs_cred_name" {}
+
+variable "glue_conn_details" {
+  type = map(object({
+    name      = string
+    engine    = string
+    host      = string
+    port      = string
+    dbname    = string
+    password  = string
+    username  = string
+    az        = string
+    subnet_id = string
+  }))
+}

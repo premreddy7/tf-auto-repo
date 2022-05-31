@@ -12,7 +12,7 @@ terraform {
 
 module "redshift" {
   source           = "../../modules/wip-redshift"
-  coinrs_cred_name = "coin_rs_creds"
+  coinrs_cred_name = "coin_rs_creds1"
   lb_config = {
     lb1 = {
       lb_name            = "edl-com-priv-to-ospr-gov-rs-lb"
@@ -75,7 +75,7 @@ module "redshift" {
     ospr-coin-redshift-sg = {
       name        = "ospr-coin-redshift-sg"
       vpc_id      = data.aws_vpc.default.id
-      tags        = { Name= "ospr-coin-redshift-sg", project_name = "coin", environment = "dev" }
+      tags        = { Name = "ospr-coin-redshift-sg", project_name = "coin", environment = "dev" }
       description = "all inbound rules to redshift"
       sec_ingress_rule = [
 
@@ -167,7 +167,7 @@ module "redshift" {
       name        = "ospr-coin-proxy_sg"
       vpc_id      = data.aws_vpc.default.id
       description = "all inbound rules to proxy"
-      tags        = { Name="ospr-coin-proxy_sg", project_name = "coin", environment = "dev" }
+      tags        = { Name = "ospr-coin-proxy_sg", project_name = "coin", environment = "dev" }
       sec_ingress_rule = [
         {
           description      = "glue connection to incorta hbi proxy"
@@ -198,7 +198,7 @@ module "redshift" {
     },
     ospr-coin-incorta_sg = {
       name        = "ospr-coin-incorta-sg"
-      tags        = { Name="ospr-coin-incorta_sg", project_name = "coin", environment = "dev" }
+      tags        = { Name = "ospr-coin-incorta_sg", project_name = "coin", environment = "dev" }
       vpc_id      = data.aws_vpc.default.id
       description = "all inbound rules to incorta"
       sec_ingress_rule = [
@@ -238,6 +238,19 @@ module "redshift" {
           self             = null
         }
       ]
+    }
+  }
+  glue_conn_details = {
+    incorta_conn = {
+      name      = "incorta"
+      engine    = local.hbi_db_creds.engine
+      host      = local.hbi_db_creds.host
+      port      = local.hbi_db_creds.port
+      dbname    = local.hbi_db_creds.dbname
+      password  = local.hbi_db_creds.password
+      username  = local.hbi_db_creds.username
+      az        = data.aws_subnet.private_1a.availability_zone
+      subnet_id = data.aws_subnet.private_1a.id
     }
   }
 
