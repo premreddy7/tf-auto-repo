@@ -6,12 +6,11 @@ terraform {
   backend "s3" {
     bucket = "tf-code-backend-state-bucket"
     region = "us-east-2"
-    key    = "env/dev/redshift/default"
   }
 }
 
 module "redshift" {
-  source           = "../../modules/wip-redshift"
+  source           = "../../modules/redshift"
   coinrs_cred_name = "coin_rs_creds1"
 
   redshift_cluster = {
@@ -142,7 +141,7 @@ module "redshift" {
       get_password_data        = false
       hibernation              = false
       monitoring               = false
-      user_data                = "proxy_user_data.sh"
+      user_data                = "scripts/proxy_user_data.sh"
       ec2_tag = {
       project_name = "coin", environment = "dev", "Patch Group" = "Amazon_Linux", "cpm backup" = "Daily" }
 
@@ -157,7 +156,7 @@ module "redshift" {
       get_password_data        = false
       hibernation              = false
       monitoring               = false
-      user_data                = "proxy_user_data.sh"
+      user_data                = "scripts/proxy_user_data.sh"
       ec2_tag                  = { project_name = "coin", environment = "dev", "Patch Group" = "Amazon_Linux", "cpm backup" = "Daily" }
     }
   }
