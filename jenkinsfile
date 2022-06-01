@@ -1,6 +1,6 @@
 def getAccountID() 
 {
-    if ( "${GIT_BRANCH}" == "dev" ) 
+    if ( "${GIT_BRANCH}" == "redshift_dev" ) 
     {
        return "${DEV_AWS_ACCOUNT_ID}"
     }
@@ -22,7 +22,7 @@ pipeline
    {
 
     AWS_ACCOUNT_ID = getAccountID()
-    IAM_ROLE="coin_devops_cbc_master_role"
+    IAM_ROLE="adminRole"
    }
 
    stages 
