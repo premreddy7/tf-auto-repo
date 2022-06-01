@@ -13,6 +13,83 @@ terraform {
 module "redshift" {
   source           = "../../modules/wip-redshift"
   coinrs_cred_name = "coin_rs_creds1"
+
+  redshift_cluster = {
+    privacera-rs = {
+      cluster_identifier                  = "privacera-rs"
+      rs_db_name                          = "coinrsdb"
+      rs_node_tpye                        = "dc2.large"
+      rs_cluster_type                     = "multi-node"
+      number_of_nodes                     = "2"
+      automated_snapshot_retention_period = "30"
+      cluster_parameter_group_name        = "ospr"
+      skip_final_snapshot                 = true
+      tags                                = { project_name = "coin", environment = "dev" }
+      iam_roles                           = ["arn:aws:iam::517446614341:role/first_glue_job_test"]
+      publicly_accessible                 = false
+      rshift_subnet_group                 = "ospr-coin-rs-subnet-group"
+      rshift_subnet_group_subnet_ids      = [data.aws_subnet.private_1a.id, data.aws_subnet.private_1b.id]
+    }
+  }
+
+  rshift_para_group = {
+    ospr = {
+      name   = "ospr"
+      family = "redshift-1.0"
+      parameters = [
+        {
+          name  = "require_ssl"
+          value = "true"
+        },
+        {
+          name  = "enable_user_activity_logging"
+          value = "true"
+        },
+        {
+          name  = "auto_analyze"
+          value = "true"
+        },
+        {
+          name  = "datestyle"
+          value = "ISO,MDY"
+        },
+        {
+          name  = "enable_case_sensitive_identifier"
+          value = "false"
+        },
+        {
+          name  = "extra_float_digits"
+          value = "0"
+        },
+        {
+          name  = "search_path"
+          value = "$user, public"
+        },
+        {
+          name  = "statement_timeout"
+          value = "0"
+        },
+        {
+          name  = "use_fips_ssl"
+          value = "false"
+        }
+      ]
+    }
+  }
+
+  s3_details = {
+    ospr-coin-dev = {
+      name                    = "ospr-coin-dev-fdsg32"
+      versioning              = true
+      tags                    = { project_name = "coin", environment = "dev" }
+      kms_key_name            = "alias/ospr-key-alias"
+      block_public_acls       = true
+      block_public_policy     = true
+      restrict_public_buckets = true
+      ignore_public_acls      = true
+    }
+  }
+
   lb_config = {
     lb1 = {
       lb_name            = "edl-com-priv-to-ospr-gov-rs-lb"
@@ -38,6 +115,20 @@ module "redshift" {
   }
 
   route53_records = [data.aws_network_interface.trans_1a.private_ip, data.aws_network_interface.trans_1b.private_ip]
+
+  glue_conn_details = {
+    incorta_conn = {
+      name      = "incorta"
+      engine    = local.hbi_db_creds.engine
+      host      = local.hbi_db_creds.host
+      port      = local.hbi_db_creds.port
+      dbname    = local.hbi_db_creds.dbname
+      password  = local.hbi_db_creds.password
+      username  = local.hbi_db_creds.username
+      az        = data.aws_subnet.private_1a.availability_zone
+      subnet_id = data.aws_subnet.private_1a.id
+    }
+  }
 
   instance_details = {
     proxy_1a = {
@@ -240,18 +331,4 @@ module "redshift" {
       ]
     }
   }
-  glue_conn_details = {
-    incorta_conn = {
-      name      = "incorta"
-      engine    = local.hbi_db_creds.engine
-      host      = local.hbi_db_creds.host
-      port      = local.hbi_db_creds.port
-      dbname    = local.hbi_db_creds.dbname
-      password  = local.hbi_db_creds.password
-      username  = local.hbi_db_creds.username
-      az        = data.aws_subnet.private_1a.availability_zone
-      subnet_id = data.aws_subnet.private_1a.id
-    }
-  }
-
 }

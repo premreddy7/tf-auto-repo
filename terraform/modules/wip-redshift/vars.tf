@@ -88,3 +88,43 @@ variable "glue_conn_details" {
     subnet_id = string
   }))
 }
+
+variable "s3_details" {
+  type = map(object({
+    name                    = string
+    versioning              = bool
+    tags                    = map(string)
+    kms_key_name            = string
+    block_public_acls       = bool
+    block_public_policy     = bool
+    restrict_public_buckets = bool
+    ignore_public_acls      = bool
+  }))
+}
+
+variable "redshift_cluster" {
+  type = map(object({
+    cluster_identifier                  = string
+    rs_db_name                          = string
+    rs_node_tpye                        = string
+    rs_cluster_type                     = string
+    number_of_nodes                     = string
+    automated_snapshot_retention_period = string
+    cluster_parameter_group_name        = string
+    skip_final_snapshot                 = bool
+    tags                                = map(string)
+    iam_roles                           = list(string)
+    publicly_accessible                 = bool
+    rshift_subnet_group                 = string
+    rshift_subnet_group_subnet_ids      = list(string)
+    })
+  )
+}
+
+variable "rshift_para_group" {
+  type = map(object({
+    name       = string
+    family     = string
+    parameters = list(map(string))
+  }))
+}

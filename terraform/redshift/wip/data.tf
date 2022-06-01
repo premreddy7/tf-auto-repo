@@ -40,7 +40,7 @@ data "aws_subnet" "private_1b" {
   }
 }
 
-###
+
 data "aws_network_interface" "trans_1a" {
 
   filter {
@@ -65,7 +65,7 @@ data "aws_network_interface" "trans_1b" {
     values = ["hbi-connectivity"]
   }
 }
-###
+
 data "aws_ami" "amzn2_gi" {
   most_recent = true
   name_regex  = "amzn2-ami-kernel-5.10-hvm-2.0.20220406.1-x86_64-gp2"
@@ -81,7 +81,7 @@ data "aws_ami" "amzn2_gi" {
     values = ["hvm"]
   }
 }
-###
+
 data "aws_secretsmanager_secret_version" "hbi_creds" {
   secret_id = var.hbi_db_arn
 }
