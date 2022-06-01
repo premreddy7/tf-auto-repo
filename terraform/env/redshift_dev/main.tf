@@ -143,7 +143,7 @@ module "redshift" {
       monitoring               = false
       user_data                = "scripts/proxy_user_data.sh"
       ec2_tag = {
-      project_name = "coin", environment = "dev", "Patch Group" = "Amazon_Linux", "cpm backup" = "Daily" }
+      project_name = "coin", environment = "dev", "Patch Group" = "Amazon_Linux", "cpm backup" = "Daily" , Name="proxy-1a"}
 
     },
     proxy_1b = {
@@ -157,7 +157,7 @@ module "redshift" {
       hibernation              = false
       monitoring               = false
       user_data                = "scripts/proxy_user_data.sh"
-      ec2_tag                  = { project_name = "coin", environment = "dev", "Patch Group" = "Amazon_Linux", "cpm backup" = "Daily" }
+      ec2_tag                  = { project_name = "coin", environment = "dev", "Patch Group" = "Amazon_Linux", "cpm backup" = "Daily", Name="proxy-1b" }
     }
   }
 
