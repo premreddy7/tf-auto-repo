@@ -90,7 +90,7 @@ variable "existing_vpc_id" {
 }
 
 variable "existing_subnet_ids" {
-  type    = list(string)
+  type = list(string)
   default = []
 }
 
@@ -107,12 +107,12 @@ variable "enable_nat_gateways" {
 }
 
 variable "kubernetes_api_cidr_blocks" {
-  type    = list(string)
+  type = list(string)
   default = []
 }
 
 variable "ops_center_cidr_blocks" {
-  type    = list(string)
+  type = list(string)
   default = []
 }
 
@@ -137,12 +137,12 @@ variable "monitoring_proxy" {
 }
 
 variable "egress_cidr_blocks" {
-  type    = list(string)
+  type = list(string)
   default = ["0.0.0.0/0"]
 }
 
 variable "ntp_egress_cidr_blocks" {
-  type    = list(string)
+  type = list(string)
   default = ["0.0.0.0/0"]
 }
 
@@ -164,6 +164,10 @@ variable "disable_selinux" {
 
 variable "block_aws_metadata_svc" {
   default = false
+}
+
+variable "private_interface" {
+  default = ""
 }
 
 locals {
@@ -194,25 +198,26 @@ data "template_file" "installer_env" {
   template = file("${path.module}/installer_env.sh")
 
   vars = {
-    cluster_name           = var.cluster_name
-    cluster_token          = var.cluster_token != "" ? var.cluster_token : random_string.cluster_token.result
-    activation_data        = var.activation_data
-    installer_url          = var.installer_url
-    org_id                 = var.anypoint_org_id
-    region                 = var.anypoint_region
-    endpoint               = var.anypoint_endpoint
-    auth_token             = var.anypoint_token
-    mule_license           = var.mule_license
-    http_proxy             = var.http_proxy
-    no_proxy               = var.no_proxy
-    monitoring_proxy       = var.monitoring_proxy
-    service_uid            = var.service_uid
-    service_gid            = var.service_gid
-    agent_url              = var.agent_url
+    cluster_name     = var.cluster_name
+    cluster_token    = var.cluster_token != "" ? var.cluster_token : random_string.cluster_token.result
+    activation_data  = var.activation_data
+    installer_url    = var.installer_url
+    org_id           = var.anypoint_org_id
+    region           = var.anypoint_region
+    endpoint         = var.anypoint_endpoint
+    auth_token       = var.anypoint_token
+    mule_license     = var.mule_license
+    http_proxy       = var.http_proxy
+    no_proxy         = var.no_proxy
+    monitoring_proxy = var.monitoring_proxy
+    service_uid      = var.service_uid
+    service_gid      = var.service_gid
+    agent_url        = var.agent_url
     pod_network_cidr_block = var.pod_network_cidr_block
     service_cidr_block     = var.service_cidr_block
     disable_selinux        = var.disable_selinux
     block_aws_metadata_svc = var.block_aws_metadata_svc
+    private_interface = var.private_interface
   }
 }
 
@@ -220,18 +225,19 @@ data "template_file" "controller_env" {
   template = file("${path.module}/controller_env.sh")
 
   vars = {
-    installer_ip           = aws_instance.installer_node[0].private_ip
-    cluster_name           = var.cluster_name
-    cluster_token          = var.cluster_token != "" ? var.cluster_token : random_string.cluster_token.result
-    http_proxy             = var.http_proxy
-    no_proxy               = var.no_proxy
-    monitoring_proxy       = var.monitoring_proxy
-    service_uid            = var.service_uid
-    service_gid            = var.service_gid
+    installer_ip     = aws_instance.installer_node[0].private_ip
+    cluster_name     = var.cluster_name
+    cluster_token    = var.cluster_token != "" ? var.cluster_token : random_string.cluster_token.result
+    http_proxy       = var.http_proxy
+    no_proxy         = var.no_proxy
+    monitoring_proxy = var.monitoring_proxy
+    service_uid      = var.service_uid
+    service_gid      = var.service_gid
     pod_network_cidr_block = var.pod_network_cidr_block
     service_cidr_block     = var.service_cidr_block
     disable_selinux        = var.disable_selinux
     block_aws_metadata_svc = var.block_aws_metadata_svc
+    private_interface = var.private_interface
   }
 }
 
@@ -239,17 +245,18 @@ data "template_file" "worker_env" {
   template = file("${path.module}/worker_env.sh")
 
   vars = {
-    installer_ip           = aws_instance.installer_node[0].private_ip
-    cluster_name           = var.cluster_name
-    cluster_token          = var.cluster_token != "" ? var.cluster_token : random_string.cluster_token.result
-    http_proxy             = var.http_proxy
-    no_proxy               = var.no_proxy
-    service_uid            = var.service_uid
-    service_gid            = var.service_gid
+    installer_ip  = aws_instance.installer_node[0].private_ip
+    cluster_name  = var.cluster_name
+    cluster_token = var.cluster_token != "" ? var.cluster_token : random_string.cluster_token.result
+    http_proxy    = var.http_proxy
+    no_proxy      = var.no_proxy
+    service_uid   = var.service_uid
+    service_gid   = var.service_gid
     pod_network_cidr_block = var.pod_network_cidr_block
     service_cidr_block     = var.service_cidr_block
     disable_selinux        = var.disable_selinux
     block_aws_metadata_svc = var.block_aws_metadata_svc
+    private_interface = var.private_interface
   }
 }
 
@@ -257,11 +264,12 @@ data "template_file" "inbound_traffic_controller_env" {
   template = file("${path.module}/inbound_traffic_controller_env.sh")
 
   vars = {
-    installer_ip           = aws_instance.installer_node[0].private_ip
-    cluster_name           = var.cluster_name
-    cluster_token          = var.cluster_token != "" ? var.cluster_token : random_string.cluster_token.result
-    disable_selinux        = var.disable_selinux
+    installer_ip  = aws_instance.installer_node[0].private_ip
+    cluster_name  = var.cluster_name
+    cluster_token = var.cluster_token != "" ? var.cluster_token : random_string.cluster_token.result
+    disable_selinux = var.disable_selinux
     block_aws_metadata_svc = var.block_aws_metadata_svc
+    private_interface = var.private_interface
   }
 }
 
