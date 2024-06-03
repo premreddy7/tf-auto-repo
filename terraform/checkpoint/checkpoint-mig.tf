@@ -23,6 +23,7 @@ module "chk-mig" {
   disk_type                   = var.disk_type
   disk_size                   = var.disk_size
   enable_monitoring           = var.enable_monitoring
+  depends_on = [ google_compute_network.vpc_external, google_compute_network.vpc_internal ]
 }  
 
 
