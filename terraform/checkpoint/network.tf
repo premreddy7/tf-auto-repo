@@ -111,7 +111,7 @@ resource "google_compute_route" "ext_vpc_route" {
 }
 
 resource "google_compute_router" "ext_vpc_router" {
-  name    = "int-vpc-nat-router"
+  name    = "ext-vpc-nat-router"
   network = google_compute_network.vpc_external.self_link
   region  = "asia-south1"
 }
@@ -172,4 +172,29 @@ resource "google_compute_firewall" "checkpoint_gw_fw" {
   }
 
   source_ranges = ["10.2.0.0/24"]
+}
+
+
+resource "google_compute_firewall" "checkpoint_gw_fw1" {
+  name    = "checkpoint-rules-gw-1"
+  network = google_compute_network.vpc_internal.self_link
+
+  allow {
+    protocol = "tcp"
+    ports    =  ["443", "8117"]
+  }
+
+  source_ranges = ["35.191.0.0/16", "130.211.0.0/22", "209.85.152.0/22", "209.85.204.0/22"]
+}
+
+resource "google_compute_firewall" "checkpoint_gw_fw2" {
+  name    = "checkpoint-rules-gw-2"
+  network = google_compute_network.vpc_external.self_link
+
+  allow {
+    protocol = "tcp"
+    ports    =  ["443", "8117"]
+  }
+
+  source_ranges = ["35.191.0.0/16", "130.211.0.0/22", "209.85.152.0/22", "209.85.204.0/22"]
 }
