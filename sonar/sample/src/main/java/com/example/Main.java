@@ -3,40 +3,32 @@ package com.example;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SampleApp {
+public class Main {
+
     public static void main(String[] args) {
         System.out.println("Hello, World!");
-        buggyMethod();
+
+        List<String> list = null; // Null pointer risk
+        list.add("This will cause a NullPointerException"); // This will fail
+
+        String foo = "bar"; // Unused variable
+        int magicNumber = 42; // Magic number
+
+        for (int i = 0; i < 10; i++) {
+            // Do nothing loop
+        }
+
+        if (magicNumber == 42) {
+            System.out.println("Magic number found");
+        } else if (magicNumber == 43) {
+            System.out.println("Another number found");
+        } else {
+            System.out.println("Default case");
+        }
     }
 
-    // Method with intentional bugs and code smells
-    public static void buggyMethod() {
-        String unusedVariable = "This is an unused variable";
-        List<Integer> list = new ArrayList<>();
-
-        // Intentional infinite loop
-        for (int i = 0; i < 10; i--) {
-            System.out.println("This is a buggy loop");
-        }
-
-        // Adding elements to list and not using it
-        for (int i = 0; i < 5; i++) {
-            list.add(i);
-        }
-
-        // Potential null pointer dereference
-        String str = null;
-        System.out.println(str.length());
-
-        // Poor naming convention
-        int a = 0;
-        a++;
-
-        // Unnecessary nested if statement
-        if (a > 0) {
-            if (a < 10) {
-                System.out.println("a is between 1 and 9");
-            }
-        }
+    // Method with poor naming convention and unused parameter
+    public void doSomething(int x, String y) {
+        // Empty method body
     }
 }
