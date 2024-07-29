@@ -1,34 +1,42 @@
 package com.example;
 
-public class SampleCode {
+import java.util.ArrayList;
+import java.util.List;
 
-    private int defaultVal = 0;
-
+public class SampleApp {
     public static void main(String[] args) {
-        SampleCode sc = new SampleCode();
-        sc.processData(null);
-        sc.divide(10, 0);
-        String result = sc.generateMessage("John", null);
-        System.out.println(result);
+        System.out.println("Hello, World!");
+        buggyMethod();
     }
 
-    public void logMessage(String message) {
-        System.out.println("LOG: " + message); // Potential security issue: Logging without proper encoding
-    }
+    // Method with intentional bugs and code smells
+    public static void buggyMethod() {
+        String unusedVariable = "This is an unused variable";
+        List<Integer> list = new ArrayList<>();
 
-    public void processData(String data) {
-        if (data.length() > 10) { // NullPointerException potential
-            System.out.println("Data is too long");
-        } else {
-            System.out.println("Data is fine");
+        // Intentional infinite loop
+        for (int i = 0; i < 10; i--) {
+            System.out.println("This is a buggy loop");
         }
-    }
 
-    public int divide(int a, int b) {
-        return a / b; // ArithmeticException for division by zero
-    }
+        // Adding elements to list and not using it
+        for (int i = 0; i < 5; i++) {
+            list.add(i);
+        }
 
-    public String generateMessage(String first, String second) {
-        return first + " " + second;
+        // Potential null pointer dereference
+        String str = null;
+        System.out.println(str.length());
+
+        // Poor naming convention
+        int a = 0;
+        a++;
+
+        // Unnecessary nested if statement
+        if (a > 0) {
+            if (a < 10) {
+                System.out.println("a is between 1 and 9");
+            }
+        }
     }
 }
