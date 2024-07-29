@@ -1,34 +1,34 @@
 package com.example;
 
-import java.util.ArrayList;
-import java.util.List;
+public class SampleCode {
 
-public class Main {
+    private int defaultVal = 0;
 
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        SampleCode sc = new SampleCode();
+        sc.processData(null);
+        sc.divide(10, 0);
+        String result = sc.generateMessage("John", null);
+        System.out.println(result);
+    }
 
-        List<String> list = null; // Null pointer risk
-        list.add("This will cause a NullPointerException"); // This will fail
+    public void logMessage(String message) {
+        System.out.println("LOG: " + message); // Potential security issue: Logging without proper encoding
+    }
 
-        String foo = "bar"; // Unused variable
-        int magicNumber = 42; // Magic number
-
-        for (int i = 0; i < 10; i++) {
-            // Do nothing loop
-        }
-
-        if (magicNumber == 42) {
-            System.out.println("Magic number found");
-        } else if (magicNumber == 43) {
-            System.out.println("Another number found");
+    public void processData(String data) {
+        if (data.length() > 10) { // NullPointerException potential
+            System.out.println("Data is too long");
         } else {
-            System.out.println("Default case");
+            System.out.println("Data is fine");
         }
     }
 
-    // Method with poor naming convention and unused parameter
-    public void doSomething(int x, String y) {
-        // Empty method body
+    public int divide(int a, int b) {
+        return a / b; // ArithmeticException for division by zero
+    }
+
+    public String generateMessage(String first, String second) {
+        return first + " " + second;
     }
 }
