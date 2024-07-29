@@ -1,0 +1,95 @@
+pipeline {
+    agent any
+
+    environment {
+        SONARQUBE_URL = "http://34.100.141.62:9000"
+        SONARQUBE_CREDENTIALS_ID = credentials('sonar') // ID of SonarQube credentials in Jenkins
+        SONARQUBE_PROJECT_KEY = "jenkins-project" 
+        GITHUB_URL = 'https://github.com/nikhil-cldcvr/tf-auto-repo.git'
+        GITHUB_BRANCH = 'main'
+        SONARQUBE_ANALYSIS_REPORT = 'sonarqube_analysis_report.csv'
+        
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: "${GITHUB_BRANCH}", url: "${GITHUB_URL}"
+            }
+        }
+
+/*
+        stage('Build') {
+            steps {
+                script {
+                    if (fileExists('sonar/sample/pom.xml')) {
+                        // Build with Maven
+                        withMaven(maven: 'Maven 3.6.3') {
+                            sh 'cd sonar/sample && mvn clean package'
+                        }
+                    } else if (fileExists('sonar/sample/build.gradle')) {
+                        // Build with Gradle
+                        sh 'cd sonar/sample && ./gradlew build'
+                    } else {
+                        error 'No build tool configuration file found (pom.xml or build.gradle)'
+                    }
+                }
+            }
+        }
+*/
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('sonar-server') {
+                        if (fileExists('sonar/sample/pom.xml')) {
+                            // Run SonarQube analysis with Maven
+                            /*sh "cd sonar/sample && mvn sonar:sonar -Dsonar.projectKey=${SONARQUBE_PROJECT_KEY} -Dsonar.token=${SONARQUBE_CREDENTIALS_ID} -Dsonar.host.url=${SONARQUBE_URL}" */
+                            sh "cd sonar/sample && mvn sonar:sonar -Dsonar.projectKey=${SONARQUBE_PROJECT_KEY}"
+                        
+                            
+                        } else if (fileExists('sonar/sample/build.gradle')) {
+                            // Run SonarQube analysis with Gradle
+                            sh "cd sonar/sample && ./gradlew sonarqube"
+                        } else {
+                            error 'No build tool configuration file found (pom.xml or build.gradle)'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                script {
+                    timeout(time: 1, unit: 'HOURS') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+        }
+
+        stage('Fetch SonarQube Report') {
+            steps {
+                script {
+                    // Fetch issues from SonarQube API and save to CSV
+                    sh '''
+                        curl -u ${SONARQUBE_CREDENTIALS_ID}: \
+                        "${SONARQUBE_URL}/api/issues/search?componentKeys=${SONARQUBE_PROJECT_KEY}&resolved=false" \
+                        | jq -r '.issues[] | [.key, .rule, .severity, .component, .line, .message, .status, .resolution, .author] | @csv' \
+                        > ${SONARQUBE_ANALYSIS_REPORT}
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+            archiveArtifacts artifacts: SONARQUBE_ANALYSIS_REPORT, allowEmptyArchive: true
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
