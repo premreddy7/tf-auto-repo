@@ -1,0 +1,67 @@
+pipeline {
+    agent {
+        label 'win'
+    }
+    
+    parameters {
+        string(name: 'BRANCH', defaultValue: 'main', description: 'The branch name to analyze')
+        string(name: 'PROJECT_KEY', defaultValue: 'jenkins-project', description: 'The SonarQube project key')
+    }
+
+    environment {
+        SONAR_URL = "http://35.244.54.6:9000" // Change to your SonarQube URL
+        API_TOKEN = "squ_6d1c8e1bc790e15e361209548d6d0de0ad2ca8a5"  // Replace with your API token
+    }
+
+    stages {
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def sonarAnalysis = powershell(script: """
+                        \$headers = @{Authorization = "Bearer ${env.API_TOKEN}"}
+                        \$url = "${env.SONAR_URL}/api/qualitygates/project_status?projectKey=${env.PROJECT_KEY}"
+                        \$response = Invoke-RestMethod -Uri \$url -Headers \$headers
+                        \$response | ConvertTo-Json -Compress
+                    """, returnStdout: true).trim()
+
+                    echo "SonarQube Analysis Results: ${sonarAnalysis}"
+                }
+            }
+        }
+
+        stage('Fetch SonarQube Issues') {
+            steps {
+                script {
+                    def issues = powershell(script: """
+                        \$headers = @{Authorization = "Bearer ${env.API_TOKEN}"}
+                        \$url = "${env.SONAR_URL}/api/issues/search?componentKeys=${env.PROJECT_KEY}&branch=${env.BRANCH}"
+                        \$response = Invoke-RestMethod -Uri \$url -Headers \$headers
+                        \$response | ConvertTo-Json -Compress
+                    """, returnStdout: true).trim()
+
+                    def issuesJson = readJSON text: issues
+                    def csvReport = new StringBuilder()
+                    csvReport.append("Project Name,Branch,Issue Key,Issue Type,Severity,Message\n")
+                    issuesJson.issues.each { issue ->
+                        csvReport.append("\"${env.PROJECT_KEY}\",")
+                        csvReport.append("\"${env.BRANCH}\",")
+                        csvReport.append("\"${issue.key}\",")
+                        csvReport.append("\"${issue.type}\",")
+                        csvReport.append("\"${issue.severity}\",")
+                        csvReport.append("\"${issue.message.replace('"', '""')}\",\n")
+                    }
+
+                    writeFile file: 'sonar_report.csv', text: csvReport.toString()
+                    archiveArtifacts artifacts: 'sonar_report.csv'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            deleteDir()
+        }
+    }
+}
