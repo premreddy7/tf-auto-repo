@@ -5,7 +5,7 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH', defaultValue: 'main', description: 'The branch name to analyze')
-        string(name: 'PROJECT_KEY', defaultValue: 'jenkins-project', description: 'The SonarQube project key')
+        string(name: 'PROJECT_KEYS', defaultValue: 'jenkins-project', description: 'Comma-separated SonarQube project keys')
     }
 
     environment {
@@ -17,43 +17,46 @@ pipeline {
         stage('Fetch SonarQube Metrics') {
             steps {
                 script {
-                    // Fetch project quality gate status and save to file
-                    bat(script: """
-                        curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/qualitygates/project_status?projectKey=${env.PROJECT_KEY} -o quality_gate_status.json
-                    """)
-
-                    // List of metrics to fetch, joined without quotes
-                    def metricQuery = "vulnerabilities,code_smells,ncloc,violations,blocker_violations,files,complexity,classes"
-
-                    // Fetch various metrics and save to file
-                    bat(script: """
-                        curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/measures/component?componentKey=${env.PROJECT_KEY}&metricKeys=${metricQuery}" -o sonar_metrics.json
-                    """)
-
-                    // Read and parse the JSON files
-                    def qualityGateJson = readJSON file: 'quality_gate_status.json'
-                    def metricsJson = readJSON file: 'sonar_metrics.json'
-
-                    def qualityGate = qualityGateJson.projectStatus.status
-
-                    // Prepare CSV report
+                    def projectKeys = params.PROJECT_KEYS.split(',')
                     def csvReport = new StringBuilder()
                     csvReport.append("Project Name,Branch,Vulnerabilities,Code Smells,Lines of Code,Critical Violations,Blocker Violations,Number of Files,Complexity,Quality Gate Status,Number of Classes\n")
 
-                    // Extract metric values
-                    def metricsMap = metricsJson.component.measures.collectEntries { [(it.metric): it.value] }
+                    def metricQuery = "vulnerabilities,code_smells,ncloc,violations,blocker_violations,files,complexity,classes"
 
-                    csvReport.append("${env.PROJECT_KEY},")
-                    csvReport.append("${env.BRANCH},")
-                    csvReport.append("${metricsMap['vulnerabilities'] ?: '0'},")
-                    csvReport.append("${metricsMap['code_smells'] ?: '0'},")
-                    csvReport.append("${metricsMap['ncloc'] ?: '0'},")
-                    csvReport.append("${metricsMap['violations'] ?: '0'},")
-                    csvReport.append("${metricsMap['blocker_violations'] ?: '0'},")
-                    csvReport.append("${metricsMap['files'] ?: '0'},")
-                    csvReport.append("${metricsMap['complexity'] ?: '0'},")
-                    csvReport.append("${qualityGate ?: 'N/A'},")
-                    csvReport.append("${metricsMap['classes'] ?: '0'}\n")
+                    projectKeys.each { projectKey ->
+                        projectKey = projectKey.trim()
+
+                        // Fetch project quality gate status
+                        bat(script: """
+                            curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/qualitygates/project_status?projectKey=${projectKey} -o quality_gate_status_${projectKey}.json
+                        """)
+
+                        // Fetch various metrics
+                        bat(script: """
+                            curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/measures/component?componentKey=${projectKey}&metricKeys=${metricQuery}" -o sonar_metrics_${projectKey}.json
+                        """)
+
+                        // Read and parse the JSON files
+                        def qualityGateJson = readJSON file: "quality_gate_status_${projectKey}.json"
+                        def metricsJson = readJSON file: "sonar_metrics_${projectKey}.json"
+
+                        def qualityGate = qualityGateJson.projectStatus.status
+
+                        // Extract metric values
+                        def metricsMap = metricsJson.component.measures.collectEntries { [(it.metric): it.value] }
+
+                        csvReport.append("${projectKey},")
+                        csvReport.append("${params.BRANCH},")
+                        csvReport.append("${metricsMap['vulnerabilities'] ?: '0'},")
+                        csvReport.append("${metricsMap['code_smells'] ?: '0'},")
+                        csvReport.append("${metricsMap['ncloc'] ?: '0'},")
+                        csvReport.append("${metricsMap['violations'] ?: '0'},")
+                        csvReport.append("${metricsMap['blocker_violations'] ?: '0'},")
+                        csvReport.append("${metricsMap['files'] ?: '0'},")
+                        csvReport.append("${metricsMap['complexity'] ?: '0'},")
+                        csvReport.append("${qualityGate ?: 'N/A'},")
+                        csvReport.append("${metricsMap['classes'] ?: '0'}\n")
+                    }
 
                     // Save and archive the CSV report
                     writeFile file: 'sonar_metrics_report.csv', text: csvReport.toString()
