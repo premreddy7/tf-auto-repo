@@ -2,7 +2,7 @@ pipeline {
     agent {
         label 'win'
     }
-    
+
     parameters {
         string(name: 'BRANCH', defaultValue: 'main', description: 'The branch name to analyze')
         string(name: 'PROJECT_KEY', defaultValue: 'jenkins-project', description: 'The SonarQube project key')
@@ -14,41 +14,50 @@ pipeline {
     }
 
     stages {
-        stage('SonarQube Analysis') {
+        stage('Fetch SonarQube Metrics') {
             steps {
                 script {
-                    def sonarAnalysis = bat(script: """
-                        curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/qualitygates/project_status?projectKey=${env.PROJECT_KEY} -o sonarAnalysis.json
-                        type sonarAnalysis.json
-                    """, returnStdout: true).trim()
+                    // Fetch project quality gate status and save to file
+                    bat(script: """
+                        curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/qualitygates/project_status?projectKey=${env.PROJECT_KEY} -o quality_gate_status.json
+                    """)
 
-                    echo "SonarQube Analysis Results: ${sonarAnalysis}"
-                }
-            }
-        }
+                    // List of metrics to fetch, joined without quotes
+                    def metricQuery = "vulnerabilities,code_smells,ncloc,violations,blocker_violations,files,complexity,classes"
 
-        stage('Fetch SonarQube Issues') {
-            steps {
-                script {
-                    def issues = bat(script: """
-                        curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/issues/search?componentKeys=${env.PROJECT_KEY}&branch=${env.BRANCH} -o sonarIssues.json
-                        type sonarIssues.json
-                    """, returnStdout: true).trim()
+                    // Fetch various metrics and save to file
+                    bat(script: """
+                        curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/measures/component?componentKey=${env.PROJECT_KEY}&metricKeys=${metricQuery} -o sonar_metrics.json
+                    """)
 
-                    def issuesJson = readJSON text: issues
+                    // Read and parse the JSON files
+                    def qualityGateJson = readJSON file: 'quality_gate_status.json'
+                    def metricsJson = readJSON file: 'sonar_metrics.json'
+
+                    def qualityGate = qualityGateJson.projectStatus.status
+
+                    // Prepare CSV report
                     def csvReport = new StringBuilder()
-                    csvReport.append("Project Name,Branch,Issue Key,Issue Type,Severity,Message\n")
-                    issuesJson.issues.each { issue ->
-                        csvReport.append("\"${env.PROJECT_KEY}\",")
-                        csvReport.append("\"${env.BRANCH}\",")
-                        csvReport.append("\"${issue.key}\",")
-                        csvReport.append("\"${issue.type}\",")
-                        csvReport.append("\"${issue.severity}\",")
-                        csvReport.append("\"${issue.message.replace('"', '""')}\",\n")
-                    }
+                    csvReport.append("Project Name,Branch,Vulnerabilities,Code Smells,Lines of Code,Critical Violations,Blocker Violations,Number of Files,Complexity,Quality Gate Status,Number of Classes\n")
 
-                    writeFile file: 'sonar_report.csv', text: csvReport.toString()
-                    archiveArtifacts artifacts: 'sonar_report.csv'
+                    // Extract metric values
+                    def metricsMap = metricsJson.component.measures.collectEntries { [(it.metric): it.value] }
+
+                    csvReport.append("${env.PROJECT_KEY},")
+                    csvReport.append("${env.BRANCH},")
+                    csvReport.append("${metricsMap['vulnerabilities'] ?: '0'},")
+                    csvReport.append("${metricsMap['code_smells'] ?: '0'},")
+                    csvReport.append("${metricsMap['ncloc'] ?: '0'},")
+                    csvReport.append("${metricsMap['violations'] ?: '0'},")
+                    csvReport.append("${metricsMap['blocker_violations'] ?: '0'},")
+                    csvReport.append("${metricsMap['files'] ?: '0'},")
+                    csvReport.append("${metricsMap['complexity'] ?: '0'},")
+                    csvReport.append("${qualityGate ?: 'N/A'},")
+                    csvReport.append("${metricsMap['classes'] ?: '0'}\n")
+
+                    // Save and archive the CSV report
+                    writeFile file: 'sonar_metrics_report.csv', text: csvReport.toString()
+                    archiveArtifacts artifacts: 'sonar_metrics_report.csv'
                 }
             }
         }
