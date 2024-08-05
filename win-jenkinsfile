@@ -27,7 +27,7 @@ pipeline {
 
                     // Fetch various metrics and save to file
                     bat(script: """
-                        curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/measures/component?componentKey=${env.PROJECT_KEY}&metricKeys=${metricQuery} -o sonar_metrics.json
+                        curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/measures/component?componentKey=${env.PROJECT_KEY}&metricKeys=${metricQuery}" -o sonar_metrics.json
                     """)
 
                     // Read and parse the JSON files
