@@ -17,11 +17,9 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def sonarAnalysis = powershell(script: """
-                        \$headers = @{Authorization = "Bearer ${env.API_TOKEN}"}
-                        \$url = "${env.SONAR_URL}/api/qualitygates/project_status?projectKey=${env.PROJECT_KEY}"
-                        \$response = Invoke-RestMethod -Uri \$url -Headers \$headers
-                        \$response | ConvertTo-Json -Compress
+                    def sonarAnalysis = bat(script: """
+                        curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/qualitygates/project_status?projectKey=${env.PROJECT_KEY} -o sonarAnalysis.json
+                        type sonarAnalysis.json
                     """, returnStdout: true).trim()
 
                     echo "SonarQube Analysis Results: ${sonarAnalysis}"
@@ -32,11 +30,9 @@ pipeline {
         stage('Fetch SonarQube Issues') {
             steps {
                 script {
-                    def issues = powershell(script: """
-                        \$headers = @{Authorization = "Bearer ${env.API_TOKEN}"}
-                        \$url = "${env.SONAR_URL}/api/issues/search?componentKeys=${env.PROJECT_KEY}&branch=${env.BRANCH}"
-                        \$response = Invoke-RestMethod -Uri \$url -Headers \$headers
-                        \$response | ConvertTo-Json -Compress
+                    def issues = bat(script: """
+                        curl -s -u ${env.API_TOKEN}: ${env.SONAR_URL}/api/issues/search?componentKeys=${env.PROJECT_KEY}&branch=${env.BRANCH} -o sonarIssues.json
+                        type sonarIssues.json
                     """, returnStdout: true).trim()
 
                     def issuesJson = readJSON text: issues
