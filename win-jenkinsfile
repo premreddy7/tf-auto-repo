@@ -12,7 +12,7 @@ pipeline {
     }
 
     environment {
-        SONAR_URL = "http://35.244.54.6:9000" // Change to your SonarQube URL
+        SONAR_URL = "http://35.200.184.45:9000" // Change to your SonarQube URL
         API_TOKEN = "squ_6d1c8e1bc790e15e361209548d6d0de0ad2ca8a5"  // Replace with your API token
     }
 
@@ -36,7 +36,7 @@ pipeline {
 
                         // Fetch various metrics
                         bat(script: """
-                            curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/measures/component?componentKey=${projectKey}&metricKeys=${metricQuery}" -o sonar_metrics_${projectKey}.json
+                            curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=${metricQuery}" -o sonar_metrics_${projectKey}.json
                         """)
 
                         // Read and parse the JSON files
