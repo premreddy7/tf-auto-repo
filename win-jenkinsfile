@@ -14,12 +14,14 @@ pipeline {
     }
 
     stages {
-        stage('Fetch Overall SonarQube Metrics') {
+       stage('Fetch Overall SonarQube Metrics') {
             steps {
                 script {
                     def projectKeys = params.PROJECT_KEYS.split(',')
                     def csvReport = new StringBuilder()
-                    csvReport.append("Project Name,Branch,Code Smells - Major,Code Smells - Critical,Code Smells - Minor,Code Smells - Blocker,Vulnerabilities - Major,Vulnerabilities - Critical,Vulnerabilities - Minor,Vulnerabilities - Blocker,Bugs - Major,Bugs - Critical,Bugs - Minor,Bugs - Blocker,Lines of Code,Violations,Blocker Violations,Number of Files,Complexity,Quality Gate Status,Number of Classes\n")
+                    csvReport.append("Overall Code Report,\n")
+                    csvReport.append(",Catagories,,Code Smells,,,,Vulnerabilities,,,,Bugs,,,,\n")
+                    csvReport.append(",Project Name,Branch,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,Lines of Code,Violations,Blocker Violations,Number of Files,Complexity,Quality Gate Status,Number of Classes,\n")
 
                     def metricQuery = "ncloc,violations,blocker_violations,files,complexity,classes"
                     def issueTypes = ['major', 'critical', 'minor', 'blocker']
@@ -64,31 +66,14 @@ pipeline {
                         }
 
                         // Append data to the CSV report
-                        csvReport.append("${projectKey},${params.BRANCH},")
+                        csvReport.append(",${projectKey},${params.BRANCH},")
                         csvReport.append("${issueCounts['CODE_SMELL_major']},${issueCounts['CODE_SMELL_critical']},${issueCounts['CODE_SMELL_minor']},${issueCounts['CODE_SMELL_blocker']},")
                         csvReport.append("${issueCounts['VULNERABILITY_major']},${issueCounts['VULNERABILITY_critical']},${issueCounts['VULNERABILITY_minor']},${issueCounts['VULNERABILITY_blocker']},")
                         csvReport.append("${issueCounts['BUG_major']},${issueCounts['BUG_critical']},${issueCounts['BUG_minor']},${issueCounts['BUG_blocker']},")
-                        csvReport.append("${metricsMap['ncloc'] ?: '0'},${metricsMap['violations'] ?: '0'},${metricsMap['blocker_violations'] ?: '0'},${metricsMap['files'] ?: '0'},${metricsMap['complexity'] ?: '0'},${qualityGate ?: 'N/A'},${metricsMap['classes'] ?: '0'}\n")
+                        csvReport.append("${metricsMap['ncloc'] ?: '0'},${metricsMap['violations'] ?: '0'},${metricsMap['blocker_violations'] ?: '0'},${metricsMap['files'] ?: '0'},${metricsMap['complexity'] ?: '0'},${qualityGate ?: 'N/A'},${metricsMap['classes'] ?: '0'},\n") 
                     }
-
-                    // Save and archive the CSV report
-                    writeFile file: 'sonar_detailed_metrics_report.csv', text: csvReport.toString()
-                    archiveArtifacts artifacts: 'sonar_detailed_metrics_report.csv'
-                }
-            }
-        }
-
-        stage('Fetch New Code Metrics') {
-          steps {
-                script {
-                    def projectKeys = params.PROJECT_KEYS.split(',')
-                    def csvReport = new StringBuilder()
-                    csvReport.append("Project Name,Branch,Code Smells - Major,Code Smells - Critical,Code Smells - Minor,Code Smells - Blocker,Vulnerabilities - Major,Vulnerabilities - Critical,Vulnerabilities - Minor,Vulnerabilities - Blocker,Bugs - Major,Bugs - Critical,Bugs - Minor,Bugs - Blocker,Lines of Code,Violations,Blocker Violations,Number of Files,Complexity,Quality Gate Status,Number of Classes\n")
-
-                    def metricQuery = "ncloc,violations,blocker_violations,files,complexity,classes"
-                    def issueTypes = ['major', 'critical', 'minor', 'blocker']
-                    def issueCategories = ['CODE_SMELL', 'VULNERABILITY', 'BUG']
-
+                    // New Code report starts here
+                    csvReport.append(",\n\n\n\nNew Code Report\n")
                     projectKeys.each { projectKey ->
                         projectKey = projectKey.trim()
 
@@ -128,7 +113,7 @@ pipeline {
                         }
 
                         // Append data to the CSV report
-                        csvReport.append("${projectKey},${params.BRANCH},")
+                        csvReport.append(",${projectKey},${params.BRANCH},")
                         csvReport.append("${issueCounts['CODE_SMELL_major']},${issueCounts['CODE_SMELL_critical']},${issueCounts['CODE_SMELL_minor']},${issueCounts['CODE_SMELL_blocker']},")
                         csvReport.append("${issueCounts['VULNERABILITY_major']},${issueCounts['VULNERABILITY_critical']},${issueCounts['VULNERABILITY_minor']},${issueCounts['VULNERABILITY_blocker']},")
                         csvReport.append("${issueCounts['BUG_major']},${issueCounts['BUG_critical']},${issueCounts['BUG_minor']},${issueCounts['BUG_blocker']},")
@@ -136,8 +121,8 @@ pipeline {
                     }
 
                     // Save and archive the CSV report
-                    writeFile file: 'sonar_new_code_metrics_report.csv', text: csvReport.toString()
-                    archiveArtifacts artifacts: 'sonar_new_code_metrics_report.csv'
+                    writeFile file: 'sonar_detailed_metrics_report.csv', text: csvReport.toString()
+                    archiveArtifacts artifacts: 'sonar_detailed_metrics_report.csv'
                 }
             }
         }
