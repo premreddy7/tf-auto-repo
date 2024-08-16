@@ -1,1 +1,35 @@
-curl -s http://<jenkins-server>/job/<job-name>/lastSuccessfulBuild/api/json
+pipeline {
+    agent any
+
+    stages {
+        stage('Get Last Successful Build Date of Another Job') {
+            steps {
+                script {
+                    // Specify the name of the job you want to query
+                    def targetJobName = 'target-job-name'
+
+                    // Get the job object for the specified job name
+                    def targetJob = Jenkins.instance.getItemByFullName(targetJobName)
+                    
+                    // Ensure the job exists
+                    if (targetJob) {
+                        // Get the last successful build of the target job
+                        def lastSuccessBuild = targetJob.getLastSuccessfulBuild()
+                        
+                        if (lastSuccessBuild) {
+                            // Get the timestamp of the last successful build
+                            def lastSuccessDate = lastSuccessBuild.getTime()
+
+                            // Print the date in a readable format
+                            echo "Last Successful Build Date of ${targetJobName}: ${lastSuccessDate}"
+                        } else {
+                            echo "No successful builds found for job: ${targetJobName}."
+                        }
+                    } else {
+                        echo "Job not found: ${targetJobName}."
+                    }
+                }
+            }
+        }
+    }
+}
