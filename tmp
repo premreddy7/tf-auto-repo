@@ -1,1 +1,1 @@
-curl -u <your_token>: "https://<your_sonarqube_server>/api/project_analyses/search?project=<project_key>"
+curl -s http://<jenkins-server>/job/<job-name>/lastSuccessfulBuild/api/json
