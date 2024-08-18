@@ -1,33 +1,47 @@
 pipeline {
-    agent any
+    agent {
+        label 'win'
+    }
+
+    parameters {
+        string(name: 'JOB_NAME', defaultValue: 'sonar', description: 'Name of the Jenkins job')
+        string(name: 'JENKINS_URL', defaultValue: 'http://34.93.109.240:8080', description: 'Jenkins server URL')
+        string(name: 'CREDENTIALS_ID', defaultValue: 'nikhil', description: 'Jenkins credentials ID')
+    }
+
+    environment {
+        CREDENTIALS_PASSWORD = "11ac03c7511f18fe582113677047edacb4" // Set the credentials password
+    }
 
     stages {
-        stage('Get Last Successful Build Date of Another Job') {
+        stage('Fetch Last Successful Build Timestamp') {
             steps {
                 script {
-                    // Specify the name of the job you want to query
-                    def targetJobName = 'target-job-name'
+                    // Construct the URL based on parameters
+                    def jobName = params.JOB_NAME
+                    def jenkinsUrl = params.JENKINS_URL
+                    def credentialsId = params.CREDENTIALS_ID
 
-                    // Get the job object for the specified job name
-                    def targetJob = Jenkins.instance.getItemByFullName(targetJobName)
-                    
-                    // Ensure the job exists
-                    if (targetJob) {
-                        // Get the last successful build of the target job
-                        def lastSuccessBuild = targetJob.getLastSuccessfulBuild()
-                        
-                        if (lastSuccessBuild) {
-                            // Get the timestamp of the last successful build
-                            def lastSuccessDate = lastSuccessBuild.getTime()
+                    def url = "${jenkinsUrl}/job/${jobName}/lastSuccessfulBuild/api/json?tree=timestamp"
 
-                            // Print the date in a readable format
-                            echo "Last Successful Build Date of ${targetJobName}: ${lastSuccessDate}"
-                        } else {
-                            echo "No successful builds found for job: ${targetJobName}."
-                        }
-                    } else {
-                        echo "Job not found: ${targetJobName}."
-                    }
+                    // Execute the curl command and store the result
+                    def response = bat(script: """
+                        curl -u "${credentialsId}:${env.CREDENTIALS_PASSWORD}" -s "${url}"
+                    """, returnStdout: true).trim()
+
+                    // Clean the response
+                    response = response.replaceFirst(/^[^\{]*/, '').trim()
+
+                    // Parse the JSON response
+                    def json = new groovy.json.JsonSlurper().parseText(response)
+                    def timestamp = json.timestamp
+
+                    // Convert and format the date
+                    def date = new Date(timestamp)
+                    def formattedDate = date.format('yyyy-MM-dd')
+
+                    // Print the formatted date
+                    echo "Formatted date: ${formattedDate}"
                 }
             }
         }
