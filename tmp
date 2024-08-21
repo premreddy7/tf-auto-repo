@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     // Construct the URL based on parameters
-                    def jobName = params.JOB_NAME
+                    def jobName = java.net.URLEncoder.encode(params.JOB_NAME, "UTF-8")
                     def jenkinsUrl = params.JENKINS_URL
                     def url = "${jenkinsUrl}/job/${jobName}/lastSuccessfulBuild/api/json?tree=timestamp"
 
