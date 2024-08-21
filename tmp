@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     // Construct the URL based on parameters
-                    def jobName = java.net.URLEncoder.encode(params.JOB_NAME, "UTF-8")
+                    def jobName = params.JOB_PATH.replaceAll(' ', '%20')
                     def jenkinsUrl = params.JENKINS_URL
                     def credentialsId = params.CREDENTIALS_ID
 
