@@ -9,6 +9,10 @@ pipeline {
         string(name: 'CREDENTIALS_ID', defaultValue: 'nikhil', description: 'Jenkins credentials ID')
     }
 
+    environment {
+        CREDENTIALS_PASSWORD = "11ac03c7511f18fe582113677047edacb4" // Set the credentials password
+    }
+
     stages {
         stage('Fetch Last Successful Build Timestamp') {
             steps {
@@ -16,38 +20,28 @@ pipeline {
                     // Construct the URL based on parameters
                     def jobName = java.net.URLEncoder.encode(params.JOB_NAME, "UTF-8")
                     def jenkinsUrl = params.JENKINS_URL
+                    def credentialsId = params.CREDENTIALS_ID
+
                     def url = "${jenkinsUrl}/job/${jobName}/lastSuccessfulBuild/api/json?tree=timestamp"
 
-                    // Retrieve credentials securely
-                    withCredentials([usernamePassword(credentialsId: params.CREDENTIALS_ID, passwordVariable: 'CREDENTIALS_PASSWORD', usernameVariable: 'CREDENTIALS_USERNAME')]) {
-                        // Execute the curl command and store the result
-                        def response = bat(script: """
-                            curl -u "${CREDENTIALS_USERNAME}:${CREDENTIALS_PASSWORD}" -s "${url}"
-                        """, returnStdout: true).trim()
+                    // Execute the curl command and store the result
+                    def response = bat(script: """
+                        curl -u "${credentialsId}:${env.CREDENTIALS_PASSWORD}" -s "${url}"
+                    """, returnStdout: true).trim()
 
-                        // Print the raw response for debugging
-                        echo "Raw response: ${response}"
+                    // Clean the response
+                    response = response.replaceFirst(/^[^\{]*/, '').trim()
 
-                        // Try parsing the JSON response
-                        try {
-                            // Clean the response (if necessary)
-                            response = response.replaceFirst(/^[^\{]*/, '').trim()
+                    // Parse the JSON response
+                    def json = new groovy.json.JsonSlurper().parseText(response)
+                    def timestamp = json.timestamp
 
-                            // Parse the JSON response
-                            def json = new groovy.json.JsonSlurper().parseText(response)
-                            def timestamp = json.timestamp
+                    // Convert and format the date
+                    def date = new Date(timestamp)
+                    def formattedDate = date.format('yyyy-MM-dd')
 
-                            // Convert and format the date
-                            def date = new Date(timestamp)
-                            def formattedDate = date.format('yyyy-MM-dd')
-
-                            // Print the formatted date
-                            echo "Formatted date: ${formattedDate}"
-                        } catch (Exception e) {
-                            // Print error details for troubleshooting
-                            error "Failed to parse JSON response: ${e.message}"
-                        }
-                    }
+                    // Print the formatted date
+                    echo "Formatted date: ${formattedDate}"
                 }
             }
         }
