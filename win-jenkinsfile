@@ -85,9 +85,14 @@ pipeline {
                         def projectKey = parts[0].trim()
                         def branch = parts[1].trim()
                         def jobPath = parts[2].trim()
+                        
+                        // Perform encoding to ensure the correct URL
+                        def encodedJobName = URLEncoder.encode(jobPath, "UTF-8")
+                        encodedJobName = encodedJobName.replace('%2F', '/').replace('+', '%20')  
 
-                        // Fetch last successful build timestamp inside the new metrics loop
-                        def url = "${params.JENKINS_URL}/job/${jobPath}/lastSuccessfulBuild/api/json?tree=timestamp"
+                        // For Windows BAT, replace '%' with '%%' to escape it
+                        def url = "${params.JENKINS_URL}/job/${encodedJobName}/lastSuccessfulBuild/api/json?tree=timestamp".replace('%', '%%')
+
                         def response = bat(script: """
                             curl -u "${params.CREDENTIALS_ID}:${env.CREDENTIALS_PASSWORD}" -s "${url}"
                         """, returnStdout: true).trim()
