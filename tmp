@@ -4,8 +4,8 @@ pipeline {
     }
 
     parameters {
-        string(name: 'JOB_NAME', defaultValue: 'sonar', description: 'Name of the Jenkins job')
-        string(name: 'JENKINS_URL', defaultValue: 'http://34.93.109.240:8080', description: 'Jenkins server URL')
+        string(name: 'JOB_NAME', defaultValue: 'Dev/job/date test', description: 'Name of the Jenkins job')
+        string(name: 'JENKINS_URL', defaultValue: 'http://34.47.151.236:8080', description: 'Jenkins server URL')
         string(name: 'CREDENTIALS_ID', defaultValue: 'nikhil', description: 'Jenkins credentials ID')
     }
 
@@ -18,11 +18,17 @@ pipeline {
             steps {
                 script {
                     // Construct the URL based on parameters
-                    def jobName = params.JOB_PATH.replaceAll(' ', '%20')
+                    def jobName = params.JOB_NAME
                     def jenkinsUrl = params.JENKINS_URL
                     def credentialsId = params.CREDENTIALS_ID
 
-                    def url = "${jenkinsUrl}/job/${jobName}/lastSuccessfulBuild/api/json?tree=timestamp"
+                    // Perform encoding to ensure the correct URL
+                    def encodedJobName = URLEncoder.encode(jobName, "UTF-8")
+                    encodedJobName = encodedJobName.replace('%2F', '/').replace('+', '%20')                    
+
+                    // For Windows BAT, replace '%' with '%%' to escape it
+                    def url = "${jenkinsUrl}/job/${encodedJobName}/lastSuccessfulBuild/api/json?tree=timestamp".replace('%', '%%')
+                    echo "Constructed URL: ${url}"
 
                     // Execute the curl command and store the result
                     def response = bat(script: """
