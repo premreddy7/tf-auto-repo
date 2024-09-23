@@ -1,6 +1,185 @@
-if ( projectKEY == "WACON" ) {
-    echo 'Project key matches "project". Executing curl command...'
-    bat(script: """
-    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=${metricQuery}&since=${formattedDate}" -o sonar_metrics_${projectKey}_new.json
-""")
+import groovy.json.JsonSlurper
+
+pipeline {
+    agent {
+		node {
+			label 'java'
+		}
+	}
+
+    parameters {
+        string(name: 'INPUTS', defaultValue: 'ACES-COBOL:dev1:int1-RLSE0010091:dev1,ACES:dev1:int1-RLSE0010091:dev1,ADMINPORTAL:master:int1-RLSE0010091:master,CMS:master:master:master,COMMONSERVICES:master:int1-RLSE0010088:master,ESERV:master:master:master,WACON:master:int1-RLSE0010091:master', description: 'Comma-separated list of project inputs in the format PROJECT_KEYS:BRANCH:JENKINS_JOB_PATH')
+        string(name: 'JENKINS_URL', defaultValue: 'https://jenkins.esa', description: 'Jenkins server URL')
+        string(name: 'CREDENTIALS_ID', defaultValue: 'xx', description: 'Jenkins credentials ID')
+    }
+
+    environment {
+        SONAR_URL = "https://sonarqube.com" 
+        API_TOKEN = "xxx"  
+    }
+
+    stages {
+        stage('Fetch SonarQube Metrics') {
+            steps {
+                script {
+                    def projectInputs = params.INPUTS.split(',')
+                    
+                    def csvReport = new StringBuilder()
+                    csvReport.append("Overall Code Report,\n")
+                    csvReport.append(",Categories,,Code Smells,,,,Vulnerabilities,,,,Bugs,,,,\n")
+                    csvReport.append(",Project Name,Branch,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,Lines of Code,Violations,Blocker Violations,Number of Files,ComplexityNumber of Classes,\n")
+
+                    def metricQuery = "ncloc,violations,blocker_violations,files,complexity,classes"
+                    def issueTypes = ['major', 'critical', 'minor', 'blocker']
+                    def issueCategories = ['CODE_SMELL', 'VULNERABILITY', 'BUG']
+
+                    projectInputs.each { input ->
+                        def parts = input.split(':')
+                        def projectKey = parts[0].trim()
+
+                        // Fetch various metrics
+                        bat(script: """
+                            curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=${metricQuery}" -o sonar_metrics_${projectKey}.json
+                        """)
+                        def metricsJson = readJSON file: "sonar_metrics_${projectKey}.json"
+
+                        def metricsMap = [:] // Plain map
+                        metricsJson.component.measures.each { measure ->
+                            metricsMap[measure.metric] = measure.value
+                        }
+
+                        def issueCounts = [:] // Plain map
+                        issueCategories.each { category ->
+                            issueTypes.each { severity ->
+                                def key = "${category}_${severity}"
+                                issueCounts[key] = 0
+                                bat(script: """
+                                    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&types=${category}&severities=${severity.toUpperCase()}&statuses=OPEN" -o issues_${projectKey}_${category}_${severity}.json
+                                """)
+                                def issuesJson = readJSON file: "issues_${projectKey}_${category}_${severity}.json"
+                                issueCounts[key] = issuesJson.total ?: 0
+                            }
+                        }
+
+                        // Append overall data to the CSV report
+                        csvReport.append(",${projectKey},master,")
+                        csvReport.append("${issueCounts['CODE_SMELL_major']},${issueCounts['CODE_SMELL_critical']},${issueCounts['CODE_SMELL_minor']},${issueCounts['CODE_SMELL_blocker']},")
+                        csvReport.append("${issueCounts['VULNERABILITY_major']},${issueCounts['VULNERABILITY_critical']},${issueCounts['VULNERABILITY_minor']},${issueCounts['VULNERABILITY_blocker']},")
+                        csvReport.append("${issueCounts['BUG_major']},${issueCounts['BUG_critical']},${issueCounts['BUG_minor']},${issueCounts['BUG_blocker']},")
+                        csvReport.append("${metricsMap['ncloc'] ?: '0'},${metricsMap['violations'] ?: '0'},${metricsMap['blocker_violations'] ?: '0'},${metricsMap['files'] ?: '0'},${metricsMap['complexity'] ?: '0'},${metricsMap['classes'] ?: '0'},\n")
+                    }
+
+                    // Append new code report header after 4/29/2024
+                    csvReport.append("\nNew Code Report Since\n")
+					csvReport.append(",Categories,,Code Smells,,,,Vulnerabilities,,,,Bugs,,,,\n")
+                    csvReport.append(",Project Name,Branch,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,\n")
+
+                    projectInputs.each { input ->
+                        def parts = input.split(':')
+                        def projectKey = parts[0].trim()
+                        def branch = parts[1].trim()
+
+                        def issueCountsNew = [:] // Plain map
+                        issueCategories.each { category ->
+                            issueTypes.each { severity ->
+                                def key = "${category}_${severity}"
+                                issueCountsNew[key] = 0
+                                bat(script: """
+                                    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&types=${category}&severities=${severity.toUpperCase()}&statuses=OPEN&createdAfter=2024-04-29&branch=${branch}" -o issues_${projectKey}_${category}_${severity}_new.json
+                                """)
+                                def issuesJsonNew = readJSON file: "issues_${projectKey}_${category}_${severity}_new.json"
+                                issueCountsNew[key] = issuesJsonNew.total ?: 0
+                            }
+                        }
+
+                        // Append new code metrics data to the CSV report
+                        csvReport.append("4/29/2024,${projectKey},${branch},")
+                        csvReport.append("${issueCountsNew['CODE_SMELL_major']},${issueCountsNew['CODE_SMELL_critical']},${issueCountsNew['CODE_SMELL_minor']},${issueCountsNew['CODE_SMELL_blocker']},")
+                        csvReport.append("${issueCountsNew['VULNERABILITY_major']},${issueCountsNew['VULNERABILITY_critical']},${issueCountsNew['VULNERABILITY_minor']},${issueCountsNew['VULNERABILITY_blocker']},")
+                        csvReport.append("${issueCountsNew['BUG_major']},${issueCountsNew['BUG_critical']},${issueCountsNew['BUG_minor']},${issueCountsNew['BUG_blocker']},\n")
+                        //csvReport.append("${metricsMapNew['ncloc'] ?: '0'},${metricsMapNew['violations'] ?: '0'},${metricsMapNew['blocker_violations'] ?: '0'},${metricsMapNew['files'] ?: '0'},${metricsMapNew['complexity'] ?: '0'},${metricsMapNew['classes'] ?: '0'}\n")
+                    }
+					
+					// Append new code report header for October Release
+                    csvReport.append("\nOctober Report Since\n")
+					csvReport.append(",Categories,,Code Smells,,,,Vulnerabilities,,,,Bugs,,,,\n")
+                    csvReport.append(",Project Name,Branch,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,\n")
+
+                    projectInputs.each { input ->
+                        def parts = input.split(':')
+                        def projectKey = parts[0].trim()
+						def branchOct = parts[2].trim()
+
+                        def issueCountsOct = [:] // Plain map
+                        issueCategories.each { category ->
+                            issueTypes.each { severity ->
+                                def key = "${category}_${severity}"
+                                issueCountsOct[key] = 0
+								
+								if ( projectKey == "WACON" ) {
+									echo 'Project key matches "project". Executing curl command...'
+									bat(script: """
+										curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&types=${category}&severities=${severity.toUpperCase()}&statuses=OPEN&createdAfter=2024-08-26&branch=${branchOct}" -o issues_${projectKey}_${category}_${severity}_oct.json
+									""")
+								}	
+								else { 
+	
+                                bat(script: """
+                                    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&types=${category}&severities=${severity.toUpperCase()}&statuses=OPEN&createdAfter=2024-06-17&branch=${branchOct}" -o issues_${projectKey}_${category}_${severity}_oct.json
+                                """)
+                                def issuesJsonOct = readJSON file: "issues_${projectKey}_${category}_${severity}_oct.json"
+                                issueCountsOct[key] = issuesJsonOct.total ?: 0
+								}
+                            }
+                        }
+
+                        // Append new code metrics data to the CSV report
+						if ( projectKey == "WACON" ) {
+							csvReport.append("8/26/2024,${projectKey},${branchOct},")
+						}
+						else {
+							csvReport.append("6/17/2024,${projectKey},${branchOct},")
+						}
+                        csvReport.append("${issueCountsOct['CODE_SMELL_major']},${issueCountsOct['CODE_SMELL_critical']},${issueCountsOct['CODE_SMELL_minor']},${issueCountsOct['CODE_SMELL_blocker']},")
+                        csvReport.append("${issueCountsOct['VULNERABILITY_major']},${issueCountsOct['VULNERABILITY_critical']},${issueCountsOct['VULNERABILITY_minor']},${issueCountsOct['VULNERABILITY_blocker']},")
+                        csvReport.append("${issueCountsOct['BUG_major']},${issueCountsOct['BUG_critical']},${issueCountsOct['BUG_minor']},${issueCountsOct['BUG_blocker']},\n")
+                    }
+					
+					// Append new code report header for January Release
+                    csvReport.append("\nJanuary Report Since\n")
+					csvReport.append(",Categories,,Code Smells,,,,Vulnerabilities,,,,Bugs,,,,\n")
+                    csvReport.append(",Project Name,Branch,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,Major,Critical,Minor,Blocker,\n")
+
+                    projectInputs.each { input ->
+                        def parts = input.split(':')
+                        def projectKey = parts[0].trim()
+						def branchJan = parts[3].trim()
+
+                        def issueCountsJan = [:] // Plain map
+                        issueCategories.each { category ->
+                            issueTypes.each { severity ->
+                                def key = "${category}_${severity}"
+                                issueCountsJan[key] = 0
+                                bat(script: """
+                                    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&types=${category}&severities=${severity.toUpperCase()}&statuses=OPEN&createdAfter=2024-08-26&branch=${branchJan}" -o issues_${projectKey}_${category}_${severity}_jan.json
+                                """)
+                                def issuesJsonJan = readJSON file: "issues_${projectKey}_${category}_${severity}_jan.json"
+                                issueCountsJan[key] = issuesJsonJan.total ?: 0
+                            }
+                        }
+
+                        // Append new code metrics data to the CSV report
+                        csvReport.append("8/26/2024,${projectKey},${branchJan},")
+                        csvReport.append("${issueCountsJan['CODE_SMELL_major']},${issueCountsJan['CODE_SMELL_critical']},${issueCountsJan['CODE_SMELL_minor']},${issueCountsJan['CODE_SMELL_blocker']},")
+                        csvReport.append("${issueCountsJan['VULNERABILITY_major']},${issueCountsJan['VULNERABILITY_critical']},${issueCountsJan['VULNERABILITY_minor']},${issueCountsJan['VULNERABILITY_blocker']},")
+                        csvReport.append("${issueCountsJan['BUG_major']},${issueCountsJan['BUG_critical']},${issueCountsJan['BUG_minor']},${issueCountsJan['BUG_blocker']},\n")
+                    }
+
+                    // Write CSV report to a file
+                    writeFile file: 'SonarQube_Metrics_Report.csv', text: csvReport.toString()
+                    archiveArtifacts artifacts: 'SonarQube_Metrics_Report.csv'
+                }
+            }
+        }
+    }
 }
