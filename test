@@ -1,0 +1,6 @@
+if ( projectKEY == "WACON" ) {
+    echo 'Project key matches "project". Executing curl command...'
+    bat(script: """
+    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=${metricQuery}&since=${formattedDate}" -o sonar_metrics_${projectKey}_new.json
+""")
+}
