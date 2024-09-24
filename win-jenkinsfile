@@ -11,7 +11,7 @@ pipeline {
 
     environment {
         SONAR_URL = "http://34.100.167.242:9000" // Change to your SonarQube URL
-        API_TOKEN = "squ_6d1c8e1bc790e15e361209548d6d0de0ad2ca8a5"  // Replace with your API token
+        API_TOKEN = "sqa_12f8587aed187dbc57bbf40bce654b903017cb6d"  // Replace with your API token
         CREDENTIALS_PASSWORD = "11ac03c7511f18fe582113677047edacb4" // Set the credentials password
     }
 
