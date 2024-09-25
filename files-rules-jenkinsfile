@@ -37,7 +37,7 @@ pipeline {
                                 
                                 // Execute the curl command to fetch issues
                                 bat(script: """
-                                    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&types=${category}&severities=${severity.toUpperCase()}" -o issues_${projectKey}_${category}_${severity}.json
+                                    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&types=${category}&severities=${severity.toUpperCase()}&ps=5000" -o issues_${projectKey}_${category}_${severity}.json
                                 """)
 
                                 // Read the JSON response
