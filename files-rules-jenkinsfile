@@ -88,7 +88,7 @@ pipeline {
                                 // Determine the category based on the severity
                                 def category = ''
                                 if (categorySeverity.contains('CODE_SMELL')) {
-                                    category = "CodeSmell-${categorySeverity.split('_')[1].capitalize()}"
+                                    category = "CodeSmell-${categorySeverity.split('_')[2].capitalize()}"
                                 } else if (categorySeverity.contains('VULNERABILITY')) {
                                     category = "Vulnerability-${categorySeverity.split('_')[1].capitalize()}"
                                 } else if (categorySeverity.contains('BUG')) {
