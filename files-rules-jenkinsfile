@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        SONAR_URL = "http://34.100.224.130:9000" // Change to your SonarQube URL
+        SONAR_URL = "http://35.244.7.10:9000" // Change to your SonarQube URL
         API_TOKEN = "squ_9aa34b2df5bb53ea7a6775655f430bf3c0810bb1"  // Replace with your API token
     }
 
