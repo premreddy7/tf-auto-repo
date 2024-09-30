@@ -31,7 +31,6 @@ pipeline {
 
                     def projectInputs = params.INPUTS.split(',')
 
-
                     projectInputs.each { input ->
                         def parts = input.split(':')
                         def projectKey = parts[0].trim()
@@ -40,20 +39,20 @@ pipeline {
                         def page = 1
                         def totalIssues = 0
                         def isLastPage = false
-
-                        // Pagination loop to handle more than 15,000 issues
                         def ruleCounts = [:] // Initialize the map to store rule counts by category and severity
-                        while (!isLastPage) {
+
+                        // Pagination loop to handle up to 10,000 issues
+                        while (!isLastPage && totalIssues < 10000) {
                             bat(script: """
-                                curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&statuses=OPEN&ps=500&p=${page}" -o issues_${projectKey}_${page}.json
+                                curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&statuses=OPEN&ps=1000&p=${page}" -o issues_${projectKey}_${page}.json
                             """)
 
                             // Read the JSON response
                             def issuesJson = readJSON file: "issues_${projectKey}_${page}.json"
-                            // Handle pagination
-                            totalIssues += issuesJson.issues.size()
-                            isLastPage = issuesJson.paging.total <= totalIssues
-                            page++
+                            if (!issuesJson || !issuesJson.issues) {
+                                isLastPage = true // No more issues to process
+                                continue
+                            }
 
                             // Count occurrences of each rule across all categories and severities
                             issuesJson.issues.each { issue ->
@@ -74,59 +73,55 @@ pipeline {
                                     ruleCounts[key][rule] = 1 // Initialize count if rule is new
                                 }
                             }
+
+                            // Update pagination status
+                            totalIssues += issuesJson.issues.size()
+                            isLastPage = (issuesJson.paging.total <= totalIssues || totalIssues >= 10000)
+                            page++
                         }
 
-                    // Prepare a list to hold all rules in a flat structure
-                    def flatRulesList = []
-
-                    // Fill the flatRulesList with rules and counts
-                    ruleCounts.each { categorySeverity, rules ->
-                        rules.each { rule, count ->
-                            flatRulesList.add([categorySeverity: categorySeverity, rule: rule, count: count])
-                        }
-                    }
-
-                    // Group rules by project key and branch
-
-                    // Build CSV rows
-                    def rulesMap = [:]
-                    ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
-                        ['major', 'critical', 'minor', 'blocker'].each { severity ->
-                            def key = "${category}_${severity}".toUpperCase()
-                            rulesMap[key] = flatRulesList.findAll { it.categorySeverity == key }
-                        }
-                    }
-
-                    // Manually determine the maximum number of rules per category/severity
-                    int maxRules = 0
-                    rulesMap.each { key, rules ->
-                        if (rules.size() > maxRules) {
-                            maxRules = rules.size()
-                        }
-                    }
-
-                    // Create data rows
-                    (0..<maxRules).each { index -> // Loop through the maximum number of rules
-                        def row = new StringBuilder()
-                        row.append(",${projectKey},${branch},")
-
-                        ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
-                            ['major', 'critical', 'minor', 'blocker'].each { severity ->
-                                def key = "${category}_${severity}".toUpperCase()
-                                def ruleEntries = rulesMap[key]
-                                if (ruleEntries.size() > index) { // Ensure we have an entry at this index
-                                    def ruleEntry = ruleEntries[index]
-                                    row.append("${ruleEntry.rule},${ruleEntry.count},")
-                                } else {
-                                    row.append("N/A,0,") // Default for missing entries
-                                }
+                        // Prepare a list to hold all rules in a flat structure
+                        def flatRulesList = []
+                        ruleCounts.each { categorySeverity, rules ->
+                            rules.each { rule, count ->
+                                flatRulesList.add([categorySeverity: categorySeverity, rule: rule, count: count])
                             }
                         }
 
-                        // Append the row to the CSV report
-                        csvReport.append(row.toString().replaceAll(/,$/, "\n")) // Remove trailing comma
+                        // Build CSV rows
+                        def rulesMap = [:]
+                        ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
+                            ['major', 'critical', 'minor', 'blocker'].each { severity ->
+                                def key = "${category}_${severity}".toUpperCase()
+                                rulesMap[key] = flatRulesList.findAll { it.categorySeverity == key }
+                            }
+                        }
+
+                        // Determine the maximum number of rules per category/severity
+                        int maxRules = rulesMap.collect { it.value.size() }.max() ?: 0
+
+                        // Create data rows
+                        (0..<maxRules).each { index -> // Loop through the maximum number of rules
+                            def row = new StringBuilder()
+                            row.append(",${projectKey},${branch},")
+
+                            ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
+                                ['major', 'critical', 'minor', 'blocker'].each { severity ->
+                                    def key = "${category}_${severity}".toUpperCase()
+                                    def ruleEntries = rulesMap[key]
+                                    if (ruleEntries.size() > index) { // Ensure we have an entry at this index
+                                        def ruleEntry = ruleEntries[index]
+                                        row.append("${ruleEntry.rule},${ruleEntry.count},")
+                                    } else {
+                                        row.append("N/A,0,") // Default for missing entries
+                                    }
+                                }
+                            }
+
+                            // Append the row to the CSV report
+                            csvReport.append(row.toString().replaceAll(/,$/, "\n")) // Remove trailing comma
+                        }
                     }
-                }    
 
                     // Write CSV report to a file
                     writeFile file: 'SonarQube_Metrics_Report.csv', text: csvReport.toString()
