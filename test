@@ -4,12 +4,12 @@ pipeline {
     }
 
     parameters {
-        string(name: 'INPUTS', defaultValue: 'jenkins-project:main,first_prj:main', description: 'Comma-separated list of project inputs in the format PROJECT_KEYS:BRANCH')
+        string(name: 'INPUTS', defaultValue: 'jenkins-project:main', description: 'Comma-separated list of project inputs in the format PROJECT_KEYS:BRANCH')
     }
 
     environment {
-        SONAR_URL = "http://34.93.143.240:9000" // Change to your SonarQube URL
-        API_TOKEN = "squ_9aa34b2df5bb53ea7a6775655f430bf3c0810bb1" // Replace with your API token
+        SONAR_URL = "http://35.244.7.10:9000" // Change to your SonarQube URL
+        API_TOKEN = "squ_9aa34b2df5bb53ea7a6775655f430bf3c0810bb1"  // Replace with your API token
     }
 
     stages {
@@ -18,116 +18,84 @@ pipeline {
                 script {
                     def csvReport = new StringBuilder()
                     csvReport.append("Overall Code Report,,,,,,,,,,,,,,,,,,,,,,,,,,\n")
-                    csvReport.append(",Categories,,,Code Smells,,,,,,,,Vulnerabilities,,,,,,,,Bugs,,,,,,,\n")
-                    csvReport.append(",Project Name,Branch,")
-
-                    // Create headers for each category and severity
-                    ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
-                        ['major', 'critical', 'minor', 'blocker'].each { severity ->
-                            csvReport.append("Rule Name,${severity.capitalize()},")
-                        }
-                    }
-                    csvReport.append("\n")
+                    csvReport.append(",Categories,,,,,,,,,,,,,,,,,,,Bugs,,,,,,,\n")
+                    csvReport.append(",Project Name,Branch,Rule Name,Count,Category,,,,,,,,,,Rule Name,Minor,Rule Name,Blocker,Rule Name,Major,Rule Name,Critical,Rule Name,Minor,Rule Name,Blocker\n")
 
                     def projectInputs = params.INPUTS.split(',')
-                    def ruleCounts = [:] // Initialize the map to store rule counts by category and severity
+                    def severities = ['BLOCKER', 'CRITICAL', 'MAJOR', 'MINOR']
 
                     projectInputs.each { input ->
                         def parts = input.split(':')
                         def projectKey = parts[0].trim()
                         def branch = parts[1].trim()
+                        def ruleCounts = [:] // Initialize rule counts for this project
 
-                        def page = 1
-                        def totalIssues = 0
-                        def isLastPage = false
-
-                        // Pagination loop to handle more than 15,000 issues
-                        while (!isLastPage) {
+                        // Fetch issues without pagination
+                        def issuesJson = [:]
+                        severities.each { severity ->
                             bat(script: """
-                                curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&ps=500&p=${page}" -o issues_${projectKey}_${page}.json
+                                curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&statuses=OPEN&severities=${severity}&ps=500" -o issues_${projectKey}_${severity}.json
                             """)
 
                             // Read the JSON response
-                            def issuesJson = readJSON file: "issues_${projectKey}_${page}.json"
-                            // Handle pagination
-                            totalIssues += issuesJson.issues.size()
-                            isLastPage = issuesJson.paging.total <= totalIssues
-                            page++
+                            issuesJson = readJSON file: "issues_${projectKey}_${severity}.json"
 
-                            // Count occurrences of each rule across all categories and severities
+                            // Check if there are any issues returned
+                            if (issuesJson.total == 0) {
+                                echo "No issues found for ${projectKey} with severity ${severity}."
+                                return
+                            }
+
+                            // Process the issues to count rules by category and severity
                             issuesJson.issues.each { issue ->
                                 def rule = issue.rule
-                                def category = issue.type // CODE_SMELL, VULNERABILITY, BUG
-                                def severity = issue.severity.toLowerCase() // major, critical, minor, blocker
-                                def key = "${category}_${severity}".toUpperCase()
+                                def severityType = issue.severity.toLowerCase()
+                                def category = issue.type.toUpperCase()
 
-                                // Initialize the rule count map for this key
+                                // Construct the key for counting
+                                def key = "${category}_${severityType}".toUpperCase()
+
+                                // Initialize the count map for this key
                                 if (!ruleCounts.containsKey(key)) {
                                     ruleCounts[key] = [:]
                                 }
 
-                                // Count occurrences of each rule for this category and severity
+                                // Increment the rule count
                                 if (ruleCounts[key].containsKey(rule)) {
-                                    ruleCounts[key][rule] += 1 // Increment count if rule already exists
+                                    ruleCounts[key][rule] += 1 // Increment if rule already exists
                                 } else {
-                                    ruleCounts[key][rule] = 1 // Initialize count if rule is new
+                                    ruleCounts[key][rule] = 1 // Initialize if rule is new
                                 }
                             }
                         }
 
-                    // Prepare a list to hold all rules in a flat structure
-                    def flatRulesList = []
-
-                    // Fill the flatRulesList with rules and counts
-                    ruleCounts.each { categorySeverity, rules ->
-                        rules.each { rule, count ->
-                            flatRulesList.add([categorySeverity: categorySeverity, rule: rule, count: count])
-                        }
-                    }
-
-                    // Group rules by project key and branch
-
-                    // Build CSV rows
-                    def rulesMap = [:]
-                    ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
-                        ['major', 'critical', 'minor', 'blocker'].each { severity ->
-                            def key = "${category}_${severity}".toUpperCase()
-                            rulesMap[key] = flatRulesList.findAll { it.categorySeverity == key }
-                        }
-                    }
-
-                    // Manually determine the maximum number of rules per category/severity
-                    int maxRules = 0
-                    rulesMap.each { key, rules ->
-                        if (rules.size() > maxRules) {
-                            maxRules = rules.size()
-                        }
-                    }
-
-                    // Create data rows
-                    (0..<maxRules).each { index -> // Loop through the maximum number of rules
-                        def row = new StringBuilder()
-                        row.append(",${projectKey},${branch},")
-
-                        ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
-                            ['major', 'critical', 'minor', 'blocker'].each { severity ->
-                                def key = "${category}_${severity}".toUpperCase()
-                                def ruleEntries = rulesMap[key]
-                                if (ruleEntries.size() > index) { // Ensure we have an entry at this index
-                                    def ruleEntry = ruleEntries[index]
-                                    row.append("${ruleEntry.rule},${ruleEntry.count},")
-                                } else {
-                                    row.append("N/A,0,") // Default for missing entries
+                        // For each project, write the counts into the CSV format
+                        ruleCounts.each { categorySeverity, rules ->
+                            rules.each { rule, count ->
+                                def row = new StringBuilder()
+                                row.append(",${projectKey},${branch},")
+                                
+                                // Determine the category based on the severity
+                                def category = ''
+                                if (categorySeverity.contains('CODE_SMELL')) {
+                                    category = "CodeSmell-${categorySeverity.split('_')[2].capitalize()}"
+                                } else if (categorySeverity.contains('VULNERABILITY')) {
+                                    category = "Vulnerability-${categorySeverity.split('_')[1].capitalize()}"
+                                } else if (categorySeverity.contains('BUG')) {
+                                    category = "Bug-${categorySeverity.split('_')[1].capitalize()}"
                                 }
+                                row.append("${rule},${count},${category},") // Add rule, count, and category
+
+                                // Add placeholders for other counts
+                                row.append(",,,,,,,,,,,,,,,,,,,,,,") // Adjust as necessary for other categories
+                                
+                                // Append the row to the CSV report
+                                csvReport.append(row.toString().replaceAll(/,$/, "\n")) // Remove trailing comma
                             }
                         }
-
-                        // Append the row to the CSV report
-                        csvReport.append(row.toString().replaceAll(/,$/, "\n")) // Remove trailing comma
                     }
-                }    
 
-                    // Write CSV report to a file
+                    // Write final CSV report to a file
                     writeFile file: 'SonarQube_Metrics_Report.csv', text: csvReport.toString()
                     archiveArtifacts artifacts: 'SonarQube_Metrics_Report.csv'
                 }
