@@ -107,7 +107,7 @@ pipeline {
                         }
 
                         // Create data rows
-                        (0..<maxRules).each { index -> // Loop through the maximum number of rules
+                        for (int index = 0; index < maxRules; index++) { // Loop through the maximum number of rules
                             def row = new StringBuilder()
                             row.append("\n")
                             row.append(",${projectKey},${branch},")
@@ -118,7 +118,32 @@ pipeline {
                                     def ruleEntries = rulesMap[key]
                                     if (ruleEntries.size() > index) { // Ensure we have an entry at this index
                                         def ruleEntry = ruleEntries[index]
-                                        row.append("${ruleEntry.rule},${ruleEntry.count},")
+                                        def ruleId = ruleEntry.rule
+
+                                        // Check if ruleId is null
+                                        if (ruleId) {
+                                            echo "Processing rule ID: ${ruleId}"
+
+                                            def sanitizedRuleKey = ruleId.replace(':', '_')
+                                            def ruleJsonFile = "rule_${sanitizedRuleKey}.json"
+                                            // Fetch the rule details from SonarQube
+                                            bat(script: """
+                                                curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/rules/show?key=${ruleId}" -o ${ruleJsonFile}
+                                             """)
+
+                                            // Read the JSON response as text
+                                            def ruleJsonText = readFile(file: ruleJsonFile)
+
+                                            // Parse the JSON text
+                                            def ruleJson = new groovy.json.JsonSlurper().parseText(ruleJsonText)
+
+                                            // Get the rule name
+                                            def ruleName = ruleJson.rule?.name ?: "Unknown Rule"
+
+                                            row.append("${ruleId} - ${ruleName},${ruleEntry.count},")
+                                        } else {
+                                            row.append("No Rule ID,,") // Handle missing rule ID
+                                        }
                                     } else {
                                         row.append(",,") // Default for missing entries
                                     }
@@ -128,6 +153,7 @@ pipeline {
                             // Append the row to the CSV report
                             csvReport.append(row.toString().replaceAll(/,$/, "\n")) // Remove trailing comma
                         }
+                        csvReport.append("\n")
                     }
 
                     // Write CSV report to a file
