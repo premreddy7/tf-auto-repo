@@ -138,7 +138,7 @@ pipeline {
                                             def ruleJson = new groovy.json.JsonSlurper().parseText(ruleJsonText)
 
                                             // Get the rule name
-                                            def ruleName = ruleJson.rule?.name ?: "Unknown Rule"
+                                            def ruleName = ruleJson.rule?.name?.replaceAll(',', ' ') ?: "Unknown Rule"
 
                                             row.append("${ruleId} - ${ruleName},${ruleEntry.count},")
                                         } else {
