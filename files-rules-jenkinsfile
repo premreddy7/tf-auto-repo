@@ -109,7 +109,6 @@ pipeline {
                         // Create data rows
                         for (int index = 0; index < maxRules; index++) { // Loop through the maximum number of rules
                             def row = new StringBuilder()
-                            row.append("\n")
                             row.append(",${projectKey},${branch},")
 
                             ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
