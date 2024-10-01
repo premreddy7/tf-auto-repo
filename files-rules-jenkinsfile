@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        SONAR_URL = "http://34.93.143.240:9000" // Change to your SonarQube URL
+        SONAR_URL = "http://34.93.149.230:9000" // Change to your SonarQube URL
         API_TOKEN = "squ_9aa34b2df5bb53ea7a6775655f430bf3c0810bb1" // Replace with your API token
     }
 
@@ -39,29 +39,22 @@ pipeline {
                         def page = 1
                         def totalIssues = 0
                         def isLastPage = false
+
+                        // Pagination loop to handle up to 10,000 issues
                         def ruleCounts = [:] // Initialize the map to store rule counts by category and severity
-
                         while (!isLastPage) {
-                            // Fetch data from SonarQube API
-                            def result = bat(script: """
+                            bat(script: """
                                 curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&statuses=OPEN&ps=500&p=${page}" -o issues_${projectKey}_${page}.json
-                                exit /B %ERRORLEVEL%
-                            """, returnStatus: true)
+                            """)
 
-                            // Check if curl command was successful
-                            if (result != 0) {
-                                error "Failed to fetch issues for ${projectKey} on page ${page}. HTTP request failed."
-                            }
-
-                            // Read the JSON response
-                            def issuesJson = readJSON file: "issues_${projectKey}_${page}.json"
-                            if (!issuesJson || !issuesJson.issues) {
-                                error "No issues found for ${projectKey} on page ${page}"
-                            }
+                            // Read the JSON response as text
+                            def jsonText = readFile(file: "issues_${projectKey}_${page}.json")
+                            // Parse the JSON text
+                            def issuesJson = new groovy.json.JsonSlurper().parseText(jsonText)
 
                             // Handle pagination
                             totalIssues += issuesJson.issues.size()
-                            isLastPage = issuesJson.paging.total <= totalIssues
+                            isLastPage = totalIssues >= 10000 || issuesJson.paging.total <= totalIssues
                             page++
 
                             // Count occurrences of each rule across all categories and severities
@@ -96,7 +89,6 @@ pipeline {
                         }
 
                         // Group rules by project key and branch
-
                         // Build CSV rows
                         def rulesMap = [:]
                         ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
@@ -117,6 +109,7 @@ pipeline {
                         // Create data rows
                         (0..<maxRules).each { index -> // Loop through the maximum number of rules
                             def row = new StringBuilder()
+                            csvReport.append("\n")
                             row.append(",${projectKey},${branch},")
 
                             ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
@@ -127,7 +120,7 @@ pipeline {
                                         def ruleEntry = ruleEntries[index]
                                         row.append("${ruleEntry.rule},${ruleEntry.count},")
                                     } else {
-                                        row.append("N/A,0,") // Default for missing entries
+                                        row.append(",,") // Default for missing entries
                                     }
                                 }
                             }
