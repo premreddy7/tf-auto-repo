@@ -109,6 +109,7 @@ pipeline {
                         // Create data rows
                         (0..<maxRules).each { index -> // Loop through the maximum number of rules
                             def row = new StringBuilder()
+                            csvReport.append("\n")
                             row.append(",${projectKey},${branch},")
 
                             ['CODE_SMELL', 'VULNERABILITY', 'BUG'].each { category ->
@@ -119,7 +120,7 @@ pipeline {
                                         def ruleEntry = ruleEntries[index]
                                         row.append("${ruleEntry.rule},${ruleEntry.count},")
                                     } else {
-                                        row.append("N/A,0,") // Default for missing entries
+                                        row.append(",,") // Default for missing entries
                                     }
                                 }
                             }
