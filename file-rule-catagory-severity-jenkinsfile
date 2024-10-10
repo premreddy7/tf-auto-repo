@@ -4,20 +4,21 @@ pipeline {
     }
 
     parameters {
-        string(name: 'INPUTS', defaultValue: 'aces:feat1,demo:feat2', description: 'Comma-separated list of project inputs in the format PROJECT_KEY:BRANCH')
+        string(name: 'INPUTS', defaultValue: 'first_prj:main', description: 'Comma-separated list of project inputs in the format PROJECT_KEY:BRANCH')
     }
 
     environment {
-        SONAR_URL = "http://35.244.34.170:9000" // Update to your SonarQube URL
+        SONAR_URL = "http://34.47.147.40:9000" // Update to your SonarQube URL
         API_TOKEN = "squ_9aa34b2df5bb53ea7a6775655f430bf3c0810bb1" // Replace with your actual API token
     }
 
     stages {
-        stage('Generate CSV Report') {
+        stage('Fetch SonarQube Metrics') {
             steps {
                 script {
                     def csvReport = new StringBuilder()
-                    csvReport.append("project,branch,Categories,severity,rule_name,filename\n")
+                    // Prepare the CSV report header
+                    csvReport.append("project,branch,Categories,severity,filename\n")
 
                     def projectInputs = params.INPUTS.split(',')
 
@@ -38,6 +39,7 @@ pipeline {
 
                             // Read the JSON response as text
                             def jsonText = readFile(file: "issues_${projectKey}_${page}.json")
+                            // Parse the JSON text
                             def issuesJson = new groovy.json.JsonSlurper().parseText(jsonText)
 
                             // Handle pagination
@@ -45,42 +47,21 @@ pipeline {
                             isLastPage = totalIssues >= 10000 || issuesJson.paging.total <= totalIssues
                             page++
 
-                            // Iterate through each issue to get rule and file information
+                            // Count occurrences of each file across all categories and severities
                             issuesJson.issues.each { issue ->
-                                def ruleId = issue.rule
+                                def component = issue.component // File name
                                 def category = issue.type // CODE_SMELL, VULNERABILITY, BUG
                                 def severity = issue.severity.toLowerCase() // major, critical, minor, blocker
-                                def filename = issue.component // File path
 
-                                def ruleJsonFile = "rule_${ruleId.replace(':', '_')}.json"
-                                // Fetch the rule details from SonarQube
-                                bat(script: """
-                                    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/rules/show?key=${ruleId}" -o ${ruleJsonFile}
-                                """)
-
-                                // Read the JSON response for rule details
-                                def ruleJsonText = readFile(file: ruleJsonFile)
-                                def ruleJson = new groovy.json.JsonSlurper().parseText(ruleJsonText)
-                                def ruleName = ruleJson.rule?.name?.replaceAll(',', ' ') ?: "Unknown Rule"
-
-                                // Append the result to the CSV
-                                csvReport.append("${projectKey},${branch},${category},${severity},${ruleName},${filename}\n")
-                            }
-                        }
-
-                        // For categories and severities with no issues, append empty placeholders
-                        ['CODE_SMELL', 'BUG', 'VULNERABILITY'].each { category ->
-                            ['major', 'critical', 'minor', 'blocker'].each { severity ->
-                                if (!csvReport.toString().contains("${projectKey},${branch},${category},${severity}")) {
-                                    csvReport.append("${projectKey},${branch},${category},${severity},,\n")
-                                }
+                                // Append the row for this issue directly to the CSV report
+                                csvReport.append("${projectKey},${branch},${category},${severity},${component}\n")
                             }
                         }
                     }
 
                     // Write CSV report to a file
-                    writeFile file: 'SonarQube_Metrics_Summary_Report.csv', text: csvReport.toString()
-                    archiveArtifacts artifacts: 'SonarQube_Metrics_Summary_Report.csv'
+                    writeFile file: 'SonarQube_Metrics_Report.csv', text: csvReport.toString()
+                    archiveArtifacts artifacts: 'SonarQube_Metrics_Report.csv'
                 }
             }
         }
