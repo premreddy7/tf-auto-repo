@@ -4,7 +4,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'INPUTS', defaultValue: 'first_prj:main', description: 'Comma-separated list of project inputs in the format PROJECT_KEY:BRANCH')
+        string(name: 'INPUTS', defaultValue: 'jenkins-project:main:2000-01-01,first_prj:main', description: 'Comma-separated list of project inputs in the format PROJECT_KEYS:BRANCH:DATE (DATE is optional)')
     }
 
     environment {
@@ -17,8 +17,7 @@ pipeline {
             steps {
                 script {
                     def csvReport = new StringBuilder()
-                    // Prepare the CSV report header
-                    csvReport.append("project,branch,Categories,severity,filename\n")
+                    csvReport.append("From,project,branch,Categories,severity,filename,rulename\n")
 
                     def projectInputs = params.INPUTS.split(',')
 
@@ -26,35 +25,46 @@ pipeline {
                         def parts = input.split(':')
                         def projectKey = parts[0].trim()
                         def branch = parts[1].trim()
+                        def date = parts.size() > 2 ? parts[2].trim() : null            
 
                         def page = 1
                         def totalIssues = 0
                         def isLastPage = false
 
-                        // Pagination loop to handle up to 10,000 issues
+                        def issuesUrl = "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&statuses=OPEN&ps=500&p=${page}"
+
+                        if (date) {
+                            issuesUrl += "&createdAfter=${date}"
+                        }
                         while (!isLastPage) {
                             bat(script: """
-                                curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&branch=${branch}&statuses=OPEN&ps=500&p=${page}" -o issues_${projectKey}_${page}.json
+                                curl -s -u ${env.API_TOKEN}: "${issuesUrl}" -o issues_${projectKey}_${page}.json
                             """)
 
-                            // Read the JSON response as text
-                            def jsonText = readFile(file: "issues_${projectKey}_${page}.json")
-                            // Parse the JSON text
-                            def issuesJson = new groovy.json.JsonSlurper().parseText(jsonText)
+                            // Use readJSON to parse the JSON data
+                            def issuesJson = readJSON file: "issues_${projectKey}_${page}.json"
 
-                            // Handle pagination
                             totalIssues += issuesJson.issues.size()
                             isLastPage = totalIssues >= 10000 || issuesJson.paging.total <= totalIssues
                             page++
 
-                            // Count occurrences of each file across all categories and severities
                             issuesJson.issues.each { issue ->
-                                def component = issue.component // File name
-                                def category = issue.type // CODE_SMELL, VULNERABILITY, BUG
-                                def severity = issue.severity.toLowerCase() // major, critical, minor, blocker
+                                def component = issue.component
+                                def category = issue.type
+                                def severity = issue.severity.toLowerCase()
+                                def ruleKey = issue.rule
+                                def sanitizedRuleKey = ruleKey.replace(':', '_')
+                                def ruleJsonFile = "rule_${sanitizedRuleKey}.json"
 
-                                // Append the row for this issue directly to the CSV report
-                                csvReport.append("${projectKey},${branch},${category},${severity},${component}\n")
+                                // Fetch rule name from SonarQube API within the same step
+                                bat(script: """
+                                    curl -s -u ${env.API_TOKEN}: "${env.SONAR_URL}/api/rules/show?key=${ruleKey}" -o ${ruleJsonFile}
+                                """)
+
+                                def ruleJson = readJSON file: ruleJsonFile
+                                def ruleName = ruleJson.rule?.name?.replaceAll(',', ' ') ?: "Unknown Rule"
+
+                                csvReport.append("${date ?: 'N/A'},${projectKey},${branch},${category},${severity},${component},${ruleKey} - ${ruleName}\n")
                             }
                         }
                     }
