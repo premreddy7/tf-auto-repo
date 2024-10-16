@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         SONAR_URL = "http://34.100.191.178:9000"  // Update to your SonarQube URL
-        API_TOKEN = "squ_9aa34b2df5bb53ea7a6775655f430bf3c0810bb1"  // Replace with your actual API token
+        API_TOKEN = "squ_9aa34b2df5bb53ea7a6775655f430bf3c0810bb1"  // Replace with your actual API token stored in Jenkins
     }
 
     stages {
@@ -29,14 +29,18 @@ pipeline {
                             curl -s -u ${env.API_TOKEN}: "${rulesUrl}" -o rules_${page}.json
                         """)
 
-                        def rulesJson = readJSON file: "rules_${page}.json"
-                        totalRules += rulesJson.rules.size()
-                        isLastPage = rulesJson.paging.total <= totalRules
-                        page++
+                        if (fileExists("rules_${page}.json")) {
+                            def rulesJson = readJSON file: "rules_${page}.json"
+                            totalRules += rulesJson.rules.size()
+                            isLastPage = rulesJson.paging.total <= totalRules
+                            page++
 
-                        // Store rule key to rule name mapping (without modification)
-                        rulesJson.rules.each { rule ->
-                            allRules[rule.key] = rule.name  // No replacement/manipulation of rule names
+                            // Store rule key to rule name mapping (without modification)
+                            rulesJson.rules.each { rule ->
+                                allRules[rule.key] = rule.name  // No replacement/manipulation of rule names
+                            }
+                        } else {
+                            error "Failed to fetch rules from SonarQube at page ${page}"
                         }
                     }
 
@@ -68,36 +72,55 @@ pipeline {
                                 curl -s -u ${env.API_TOKEN}: "${issuesUrl}" -o issues_${projectKey}_${issuePage}.json
                             """)
 
-                            def issuesJson = readJSON file: "issues_${projectKey}_${issuePage}.json"
+                            if (fileExists("issues_${projectKey}_${issuePage}.json")) {
+                                def issuesJson = readJSON file: "issues_${projectKey}_${issuePage}.json"
 
-                            totalIssues += issuesJson.issues.size()
-                            issuesLastPage = totalIssues >= 10000 || issuesJson.paging.total <= totalIssues
-                            issuePage++
+                                totalIssues += issuesJson.issues.size()
+                                issuesLastPage = totalIssues >= 10000 || issuesJson.paging.total <= totalIssues
+                                issuePage++
 
-                            issuesJson.issues.each { issue ->
-                                def component = issue.component
-                                def category = issue.type
-                                def severity = issue.severity.toLowerCase()
-                                def ruleKey = issue.rule
+                                issuesJson.issues.each { issue ->
+                                    def component = issue.component
+                                    def category = issue.type
+                                    def severity = issue.severity.toLowerCase()
+                                    def ruleKey = issue.rule
 
-                                // Fetch the exact rule name from the previously stored allRules
-                                def ruleName = allRules[ruleKey] ?: "Unknown Rule"
+                                    // Fetch the exact rule name from the previously stored allRules
+                                    def ruleName = allRules[ruleKey] ?: "Unknown Rule"
 
-                                def issueKey = "${branch},${category},${severity},${component},${ruleName}"
-                                echo $issueKey
+                                    // Create a unique issue key based on branch, category, severity, component, and rule name
+                                    def issueKey = "${branch},${category},${severity},${component},${ruleName}"
 
-                                // Update the map with counts of unique values
-                                if (issuesMap.containsKey(issueKey)) {
-                                    issuesMap[issueKey] += 1
-                                } else {
-                                    issuesMap[issueKey] = 1
+                                    echo "Processing issue: ${issueKey}"
+
+                                    // Match against existing keys in the issuesMap
+                                    def foundMatch = false
+                                    issuesMap.each { key, count ->
+                                        // Check if the current key contains the relevant parts of the issueKey
+                                        if (key.contains("${branch},${category},${severity},${component},")) {
+                                            issuesMap[key] += 1
+                                            echo "Duplicate found: ${issuesMap[key]} occurrences"
+                                            foundMatch = true
+                                        }
+                                    }
+
+                                    // If no match was found, add a new entry
+                                    if (!foundMatch) {
+                                        issuesMap[issueKey] = 1
+                                    }
                                 }
+                            } else {
+                                error "Failed to fetch issues for project ${projectKey} at page ${issuePage}"
                             }
                         }
 
+                        // Debugging output to verify contents of issuesMap
+                        echo "Issues Map Contents for ${projectKey}: ${issuesMap}"
+
                         // Append the unique entries with count to the CSV report
                         issuesMap.each { key, count ->
-                            csvReport.append("${date ?: 'N/A'},${projectKey},${key},${count}\n")
+                            def keyParts = key.split(',')
+                            csvReport.append("${date ?: 'N/A'},${projectKey},${keyParts[0]},${keyParts[1]},${keyParts[2]},${keyParts[3]},${keyParts[4]},${count}\n")
                         }
                     }
 
