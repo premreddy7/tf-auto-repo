@@ -1,0 +1,611 @@
+13:14:09  D:\Jenkins\workspace\SonarQube\SonarQube Rules Report>curl -s -u : "https://api/issues/search?componentKeys=WACON&branch=master&statuses=OPEN&ps=500&p=1&createdAfter=2024-04-29" -o issues_WACON_1.json 
+13:14:10  [Pipeline] fileExists
+13:14:10  [Pipeline] readJSON
+13:14:10  [Pipeline] echo
+13:14:10  Processing issue: master,CODE_SMELL,minor,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,The diamond operator ("<>") should be used
+13:14:10  [Pipeline] echo
+13:14:10  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used
+13:14:10  [Pipeline] echo
+13:14:10  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used
+13:14:10  [Pipeline] echo
+13:14:10  Duplicate found: 2 occurrences
+13:14:10  [Pipeline] echo
+13:14:10  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used
+13:14:10  [Pipeline] echo
+13:14:10  Duplicate found: 3 occurrences
+13:14:10  [Pipeline] echo
+13:14:10  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used
+13:14:10  [Pipeline] echo
+13:14:10  Duplicate found: 4 occurrences
+13:14:10  [Pipeline] echo
+13:14:10  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used
+13:14:10  [Pipeline] echo
+13:14:10  Duplicate found: 5 occurrences
+13:14:10  [Pipeline] echo
+13:14:10  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used
+13:14:10  [Pipeline] echo
+13:14:10  Duplicate found: 6 occurrences
+13:14:10  [Pipeline] echo
+13:14:10  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used
+13:14:10  [Pipeline] echo
+13:14:11  Duplicate found: 7 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 8 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,minor,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Strings literals should be placed on the left side when checking for equality
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 2 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,minor,WACON:eapplication/eapplicationWAR/src/gov/wa/benefitportal/eapplication/common/LocaleHelper.java,Unnecessary imports should be removed
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,minor,WACON:eapplication/eapplicationWAR/src/gov/wa/benefitportal/eapplication/common/LocaleHelper.java,Unnecessary imports should be removed
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 2 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationWAR/src/gov/wa/benefitportal/eapplication/controller/ConfirmationController.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationWAR/src/gov/wa/benefitportal/eapplication/controller/ConfirmationController.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 2 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationWAR/src/gov/wa/benefitportal/eapplication/controller/ConfirmationController.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 3 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/services/PDFGenerationService.java,Regex patterns should not be created needlessly
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/utils/BuildResultsXMLUtil.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,The diamond operator ("<>") should be used
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 2 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 3 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 4 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 5 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 6 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 7 occurrences
+13:14:11  [Pipeline] echo
+13:14:11  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used
+13:14:11  [Pipeline] echo
+13:14:11  Duplicate found: 8 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,info,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Track uses of "TODO" tags
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Strings literals should be placed on the left side when checking for equality
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 2 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,The diamond operator ("<>") should be used
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 3 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Strings literals should be placed on the left side when checking for equality
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 4 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Strings literals should be placed on the left side when checking for equality
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 5 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Strings literals should be placed on the left side when checking for equality
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 6 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Strings literals should be placed on the left side when checking for equality
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 7 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Strings literals should be placed on the left side when checking for equality
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 8 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewobjects/ResultsVO.java,Classes should not have too many methods
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,blocker,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables declared with "var" should be declared before they are used
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,blocker,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables declared with "var" should be declared before they are used
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 2 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables and functions should not be declared in the global scope
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables and functions should not be declared in the global scope
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 2 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables and functions should not be declared in the global scope
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 3 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 4 occurrences
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:12  [Pipeline] echo
+13:14:12  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:12  [Pipeline] echo
+13:14:12  Duplicate found: 2 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 5 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 3 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Statements should end with semicolons
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 4 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 5 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Statements should end with semicolons
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 6 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"if ... else if" constructs should end with "else" clauses
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 6 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 7 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 8 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Statements should end with semicolons
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 9 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 10 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Statements should end with semicolons
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 11 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Sections of code should not be commented out
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 7 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Extra semicolons should be removed
+13:14:13  [Pipeline] echo
+13:14:13  Duplicate found: 12 occurrences
+13:14:13  [Pipeline] echo
+13:14:13  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Sections of code should not be commented out
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 8 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables and functions should not be declared in the global scope
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 9 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 13 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Cognitive Complexity of functions should not be too high
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 2 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Sections of code should not be commented out
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 10 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 14 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,blocker,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables should be declared explicitly
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 3 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 11 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 15 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 12 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 16 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 17 occurrences
+13:14:14  [Pipeline] echo
+13:14:14  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables and functions should not be declared in the global scope
+13:14:14  [Pipeline] echo
+13:14:14  Duplicate found: 13 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 14 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 18 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 19 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 15 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Statements should be on separate lines
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 16 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Statements should end with semicolons
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 20 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Magic numbers should not be used
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 17 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 18 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 19 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 21 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 22 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 23 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 20 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 24 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 25 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 26 occurrences
+13:14:15  [Pipeline] echo
+13:14:15  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:15  [Pipeline] echo
+13:14:15  Duplicate found: 21 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 27 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 28 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 29 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 30 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 31 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 32 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 33 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Magic numbers should not be used
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 22 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Unchanged variables should be marked "const"
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 3 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Unchanged variables should be marked "const"
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 4 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 23 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 24 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:16  [Pipeline] echo
+13:14:16  Duplicate found: 25 occurrences
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,minor,WACON:common/utilities/src/gov/wa/benefitPortal/common/utilities/InitWebsphereListener.java,Redundant casts should not be used
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,major,WACON:common/utilities/src/gov/wa/benefitPortal/common/utilities/InitWebsphereListener.java,Magic numbers should not be used
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,major,WACON:cba/cbaWAR/WebContent/JSP/UserSchedules.jsp,The "style" attribute should not be used
+13:14:16  [Pipeline] echo
+13:14:16  Processing issue: master,CODE_SMELL,major,WACON:eapplication/eapplicationWAR/WebContent/JSP/Results.jsp,Attributes deprecated  in HTML5 should not be used
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/WebContent/JSP/Results.jsp,Attributes deprecated  in HTML5 should not be used
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables and functions should not be declared in the global scope
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 26 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Cognitive Complexity of functions should not be too high
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 5 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Functions should use "return" consistently
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 27 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 28 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 29 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 30 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 34 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Statements should end with semicolons
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 35 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 31 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 36 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 32 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 37 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Unchanged variables should be marked "const"
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 6 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:17  [Pipeline] echo
+13:14:17  Duplicate found: 38 occurrences
+13:14:17  [Pipeline] echo
+13:14:17  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 39 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 40 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 41 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Trailing commas should not be used
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 42 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 33 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Unchanged variables should be marked "const"
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 7 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 43 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 44 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 45 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 46 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 47 occurrences
+13:14:18  [Pipeline] echo
+13:14:18  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Trailing commas should not be used
+13:14:18  [Pipeline] echo
+13:14:18  Duplicate found: 48 occurrences
+13:14:18  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Unchanged variables should be marked "const"
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 8 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Statements should end with semicolons
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 49 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Unchanged variables should be marked "const"
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 9 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Unchanged variables should be marked "const"
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 10 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 50 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 51 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 52 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 53 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 54 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 55 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Cognitive Complexity of functions should not be too high
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 11 occurrences
+13:14:19  [Pipeline] echo
+13:14:19  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:19  [Pipeline] echo
+13:14:19  Duplicate found: 34 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 56 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 35 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 57 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Magic numbers should not be used
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 36 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 58 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 59 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 60 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 61 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Magic numbers should not be used
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 37 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables and functions should not be declared in the global scope
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 38 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Braces and parentheses should be used consistently with arrow functions
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 62 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:20  [Pipeline] echo
+13:14:20  Duplicate found: 63 occurrences
+13:14:20  [Pipeline] echo
+13:14:20  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:21  [Pipeline] echo
+13:14:21  Duplicate found: 64 occurrences
+13:14:21  [Pipeline] echo
+13:14:21  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"===" and "!==" should be used instead of "==" and "!="
+13:14:21  [Pipeline] echo
+13:14:21  Duplicate found: 39 occurrences
+13:14:21  [Pipeline] echo
+13:14:21  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:21  [Pipeline] echo
+13:14:21  Duplicate found: 65 occurrences
+13:14:21  [Pipeline] echo
+13:14:21  Processing issue: master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently
+13:14:21  [Pipeline] echo
+13:14:21  Duplicate found: 66 occurrences
+13:14:21  [Pipeline] echo
+13:14:21  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Magic numbers should not be used
+13:14:21  [Pipeline] echo
+13:14:21  Duplicate found: 40 occurrences
+13:14:21  [Pipeline] echo
+13:14:21  Processing issue: master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Magic numbers should not be used
+13:14:21  [Pipeline] echo
+13:14:21  Duplicate found: 41 occurrences
+13:14:21  [Pipeline] echo
+13:14:21  Issues Map Contents for WACON: [master,CODE_SMELL,minor,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,The diamond operator ("<>") should be used:2, master,CODE_SMELL,major,WACON:eapplication/eapplicationEJB/ejbModule/gov/wa/benefitportal/eapplication/mapper/ResultsMapper.java,Magic numbers should not be used:8, master,CODE_SMELL,minor,WACON:eapplication/eapplicationWAR/src/gov/wa/benefitportal/eapplication/common/LocaleHelper.java,Unnecessary imports should be removed:2, master,CODE_SMELL,major,WACON:eapplication/eapplicationWAR/src/gov/wa/benefitportal/eapplication/controller/ConfirmationController.java,Magic numbers should not be used:3, master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/services/PDFGenerationService.java,Regex patterns should not be created needlessly:1, master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/utils/BuildResultsXMLUtil.java,Magic numbers should not be used:1, master,CODE_SMELL,minor,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,The diamond operator ("<>") should be used:8, master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Magic numbers should not be used:8, master,CODE_SMELL,info,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewhelper/ResultsMapper.java,Track uses of "TODO" tags:1, master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/src/gov/wa/benefitportal/prescreening/viewobjects/ResultsVO.java,Classes should not have too many methods:1, master,CODE_SMELL,blocker,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables declared with "var" should be declared before they are used:3, master,CODE_SMELL,major,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Variables and functions should not be declared in the global scope:41, master,CODE_SMELL,minor,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,Quotes for string literals should be used consistently:66, master,CODE_SMELL,critical,WACON:static/wwwroot/Support/js/Wanda_Chatbot.js,"if ... else if" constructs should end with "else" clauses:11, master,CODE_SMELL,minor,WACON:common/utilities/src/gov/wa/benefitPortal/common/utilities/InitWebsphereListener.java,Redundant casts should not be used:1, master,CODE_SMELL,major,WACON:common/utilities/src/gov/wa/benefitPortal/common/utilities/InitWebsphereListener.java,Magic numbers should not be used:1, master,CODE_SMELL,major,WACON:cba/cbaWAR/WebContent/JSP/UserSchedules.jsp,The "style" attribute should not be used:1, master,CODE_SMELL,major,WACON:eapplication/eapplicationWAR/WebContent/JSP/Results.jsp,Attributes deprecated  in HTML5 should not be used:1, master,CODE_SMELL,major,WACON:prescreening/prescreeningWAR/WebContent/JSP/Results.jsp,Attributes deprecated  in HTML5 should not be used:1]
